@@ -3,5 +3,6 @@
 .gradle
 .project
 .settings
-.idea
-
+*.log
+/build/
+/bin/
