@@ -19,7 +19,8 @@ public class FormatFieldTest {
 
 	@Test
 	public void testValueOf() {
-		assertEquals("mainOType: { %OTYPE(numeric: N, short: S, veryshort: 3, verbose: V) }", FormatField.MAINOTYPE.valueOf());
+		assertEquals("mainOType: { %OTYPE(numeric: `N`, shortname: `S`, veryshortname: `3`, "
+				+ "verbose: `V`) }", FormatField.MAINOTYPE.valueOf());
 	}
 
 }

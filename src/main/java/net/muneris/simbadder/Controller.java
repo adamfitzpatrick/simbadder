@@ -6,6 +6,7 @@ import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
 import net.muneris.simbadder.simbadapi.formatting.FormatField;
+import net.muneris.simbadder.simbadapi.query.CustomQuery;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,6 @@ public class Controller {
 	private Simbad simbad;
 	
 	public Controller() {
-		simbad = new Simbad();
 	}
 	
 	/**
@@ -36,10 +36,11 @@ public class Controller {
 	 */
 	@RequestMapping("/test0")
 	public List<SimbadObject> test0() {
+		CustomQuery query = new CustomQuery("query coo 0 0 radius=10m");
 		Format format = new Format("test");
 		format.setFields(FormatField.getAll());
-		simbad.setFormat(format);
-		List<SimbadObject> objects = simbad.runQuery();
+		simbad = new Simbad(query, format);
+		List<SimbadObject> objects = simbad.execute();
 		log.info("Found " + objects.size() + " objects.");
 		return objects;
 	}

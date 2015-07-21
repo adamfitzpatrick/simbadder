@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.formatting.Format;
+import net.muneris.simbadder.simbadapi.query.Query;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.client.RestTemplate;
@@ -65,7 +66,7 @@ public class Simbad {
 	 */
 	private Format format;
 	/** The actual query submitted to SIMBAD. */
-	private String query;
+	private Query query;
 	/** Spring class for consuming REST services. */
 	private RestTemplate restTemplate;
 	/** Jackson object mapper to convert string response to JSON. */
@@ -73,7 +74,6 @@ public class Simbad {
 	
 	/* TODO JavaDoc */
 	public Simbad() {
-		query = "query coo 0 0 radius=10m";
 		restTemplate = new RestTemplate();
 		SimbadRestInterceptor interceptor = new SimbadRestInterceptor();
 		restTemplate.setInterceptors(Collections.singletonList(interceptor));
@@ -83,9 +83,12 @@ public class Simbad {
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 	}
 	
-	/* TODO Constructor with Query and Format */
-	/* TODO setQuery */
-	/* TODO getQuery */
+	/* TODO JavaDoc */
+	public Simbad(Query query, Format format) {
+		this();
+		this.query = query;
+		this.format = format;
+	}
 	
 	/** Sets the format object for this instance.*/
 	public void setFormat(Format format) {
@@ -97,12 +100,22 @@ public class Simbad {
 		return format;
 	}
 	
+	/** Sets the query object for this instance.*/
+	public void setQuery(Query query) {
+		this.query = query;
+	}
+	
+	/** Retrieves the query object for this instance.*/
+	public Query getQuery() {
+		return query;
+	}
+	
 	/**
 	 * Executes a query on the SIMBAD api, provided the format
 	 * and query members have been defined.
-	 * @return response from the SIMBAD server as a string.
+	 * @return response from the SIMBAD server as a JSON object.
 	 */
-	public List<SimbadObject> runQuery() {
+	public List<SimbadObject> execute() {
 		if (query == null) {
 			log.error("Missing query.");
 			return null;
@@ -111,7 +124,7 @@ public class Simbad {
 			log.error("Missing format.");
 			return null;
 		}
-		return convert(restTemplate.getForObject(QUERYURL, String.class, format.getFormatString(), query));
+		return convert(restTemplate.getForObject(QUERYURL, String.class, format.getFormatString(), query.getQueryString()));
 	}
 	
 	/**
