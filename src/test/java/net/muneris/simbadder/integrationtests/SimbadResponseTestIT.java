@@ -1,9 +1,9 @@
 package net.muneris.simbadder.integrationtests;
 
 import static net.muneris.simbadder.testUtils.TestConstants.NAME;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
 import net.muneris.simbadder.simbadapi.formatting.FormatField;
+import net.muneris.simbadder.simbadapi.query.CustomQuery;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,11 +28,8 @@ public class SimbadResponseTestIT {
 	
 	@Before
 	public void setUp() throws Exception {
-		simbad = new Simbad();
 		format = new Format(NAME);
 		format.setFields(FormatField.getAll());
-		//format.addField(FormatField.MEASLIST);
-		simbad.setFormat(format);
 		mapper = new ObjectMapper();
 	}
 
@@ -40,8 +38,10 @@ public class SimbadResponseTestIT {
 	}
 
 	@Test
-	public void test() throws JsonProcessingException {
-		List<SimbadObject> objects = simbad.runQuery();
+	public void testCustomQuery() throws JsonProcessingException {
+		CustomQuery query = new CustomQuery("query coo 0 0 radius=10m");
+		simbad = new Simbad(query, format);
+		List<SimbadObject> objects = simbad.execute();
 		assertNotNull(objects);
 		assertEquals(32, objects.size());
 		String jsonString = mapper.writeValueAsString(objects.get(0));
