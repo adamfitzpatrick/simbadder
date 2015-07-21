@@ -21,10 +21,8 @@
 
 package net.muneris.simbadder;
 
-import org.apache.log4j.Logger;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /** 
  * This class is the main entry point for Simbadder.
@@ -51,20 +49,11 @@ import org.springframework.web.client.RestTemplate;
  * @since 2015-07-08
  *
  */
-public class Application implements CommandLineRunner {
-	
-	final static Logger log = Logger.getLogger(Application.class);
+
+@SpringBootApplication
+public class Application{
 	
 	public static void main(String[] args) {
         SpringApplication.run(Application.class);
 	}
-	
-    @Override
-    public void run(String... strings) throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
-        String quote = restTemplate.getForObject("http://gturnquist-quoters.cfapps.io/api/random", String.class);
-        log.info(quote);
-        log.error("FUCK!");
-    }
-
 }
