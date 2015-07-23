@@ -10,7 +10,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 /**
  * This class sets the application context such as dispatcher servlet parameters,
  * error pages and other properties.
- * 
  * @author Adam Fitzpatrick (adam@muneris.net)
  */
 public class WebAppInitializer implements WebApplicationInitializer {

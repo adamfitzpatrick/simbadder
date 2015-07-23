@@ -2,6 +2,10 @@ package net.muneris.simbadder.testUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.muneris.simbadder.model.SimbadObject;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,17 @@ public class TestConstants {
 			+ "veryshort: `QSO`, verbose: `Quasar` }{ numeric: `15.15.04.00`, "
 			+ "short: `QSO`, veryshort: `QSO`, verbose: `Quasar` }], oType: { numeric: "
 			+ "`15.15.04.00`, short: `QSO`, veryshort: `QSO`, verbose: `Quasar` }}";
+	public static final String SIMBADDER_RESPONSE_STRING = "[{\"mainOType\":null,\"coo\":null,"
+			+ "\"distance\":10.0,\"parallax\":null,\"radialVelocity\":null,\"fluxList\":null,"
+			+ "\"spectralType\":null,\"morphologicalType\":null,\"dimensions\":null,"
+			+ "\"mainId\":null,\"idList\":null,\"bibCodeList\":null,\"measurements\":null,"
+			+ "\"notes\":null,\"properMotion\":null,\"oTypeList\":null}]";
+	public static final List<SimbadObject> SIMBAD_OBJECTS = new ArrayList<>();
+	static {
+		SimbadObject simbadObject = new SimbadObject();
+		simbadObject.setDistance("10.0");
+		SIMBAD_OBJECTS.add(simbadObject);
+	}
 	public static final MockClientHttpRequest REQUEST = new MockClientHttpRequest();
 	static {
 		try {
