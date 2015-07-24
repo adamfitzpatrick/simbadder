@@ -25,29 +25,32 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /** 
- * This class is the main entry point for Simbadder.
+ * <p>Main entry point for Simbadder.</p>
  * 
- * Simbadder seeks to provide access to a modernized verion of the data
+ * <p>Simbadder seeks to provide access to a modernized verion of the data
  * provided by the SIMBAD database and its associated APIs at the University
  * of Strasbourg.  SIMBAD represents one of the most complete publicly available
  * databases of astronomical objects.  As of July 8, 2015, the database contains
  * nearly 8 million objects.  I am extremely grateful to the researchers at the
- * University of Strasbourg for maintaining this resource and making it publicly.
+ * University of Strasbourg for maintaining this resource and making it publicly
+ * accessible.</p>
  * 
- * Currently, the database provides information in HTML, text and VOTable formats.
+ * <p>Currently, the database provides information in HTML, text and VOTable formats.
  * Considerable effort is required to coerce search results into a highly readable
  * and machine-friendly format like JSON, either as part of the search query or after
- * obtaining results.
+ * obtaining results.</p>
  * 
- * This tool acts as a pass-through microservice, providing APIs with flexible and
- * friendly query formats, and returning results pre-formatted to JSON.
+ * <p>This tool acts as a pass-through microservice, providing APIs with flexible and
+ * friendly query formats, and returning results pre-formatted to JSON.</p>
  * 
- * Thanks to Pivotal Software, Inc and their SpringIO team, and to the researchers,
- * operators and staff at CDS, Strasbourg, France.
+ * <p>Thanks to Pivotal Software, Inc and their SpringIO team, and to the researchers,
+ * operators and staff at CDS, Strasbourg, France.</p>
+ * 
+ * <a href="http://simbad.u-strasbg.fr/simbad">http://http://simbad.u-strasbg.fr/simbad/</a>
  * 
  * @author Adam Fitzpatrick (adam@muneris.net)
  * @since 2015-07-08
- *
+ * 
  */
 
 @SpringBootApplication

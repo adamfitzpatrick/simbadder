@@ -3,44 +3,34 @@ package net.muneris.simbadder.model;
 import org.jboss.logging.Logger;
 
 /**
- * This class provides a data model for bibCodes (bibliography codes) provided
+ * <p>Provides a data model for bibCodes (bibliography codes) provided
  * by SIMBAD.  Please refer to the University of Strasbourg's website for more
- * information on bibCodes and how they are used.
+ * information on bibCodes and how they are used.</p>
+ * 
+ * <p>See <a href="http://simbad.u-strasbg.fr/guide/sim-ref.htx">http://simbad.u-strasbg.fr/guide/sim-ref.htx</a><br>
+ * See <a href="http://simbad.u-strasbg.fr/guide/refcode/refcode-paper.html">
+ * http://simbad.u-strasbg.fr/guide/refcode/refcode-paper.html</a></p>
  * @author adam.fitzpatrick
- * @see http://simbad.u-strasbg.fr/guide/sim-ref.htx
- * @see http://simbad.u-strasbg.fr/guide/refcode/refcode-paper.html
  */
 public class BibCode {
 
 	private static final Logger log = Logger.getLogger(BibCode.class);
 	
-	/** 19-digit code string allowing a publication to be located */
 	private String bibCode;
-	/** Citation string specifying journal, pages and publication year */
 	private String coordinates;
-	/** Article title */
 	private String title;
-	/** Last page of article as published */
 	private int lastPage;
-	/** String listing of authors */
 	private String authors;
-	/** Any comments regarding publication status or other information */
 	private String comments;
-	/** Errata listing, if applicable */
 	private String errata;
-	/** Nomenclature dictionary, if available */
 	private String nomenclatureDictionary;
-	/** Associated flags */
 	private String flags;
-	/** Files available at Centre de Données, if available */
 	private String files;
-	/** Additional details included in the reference */
 	private String notes;
-	/** Reference status, such as whether the reference is currently being processed */
 	private String status;
 	
 	/**
-	 * Accessor for the bibCode string
+	 * Accessor for the bibCode string.
 	 * @return 19-digit bibCode
 	 */
 	public String getBibCode() {
@@ -48,15 +38,15 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for the bibCode string
-	 * @param 19-digit code provided by SIMBAD
+	 * Setter for the bibCode string.
+	 * @param bibCode 19-digit code provided by SIMBAD
 	 */
 	public void setBibCode(String bibCode) {
 		this.bibCode = bibCode.trim();
 	}
 	
 	/**
-	 * Accessor for reference coordinates.
+	 * Accessor for reference citation/coordinates.
 	 * @return Journal source, pages and publication year as a string
 	 */
 	public String getCoordinates() {
@@ -64,15 +54,15 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for reference coordinates
-	 * @param coordinate string provided by SIMBAD
+	 * Setter for reference coordinates.
+	 * @param coordinates string provided by SIMBAD
 	 */
 	public void setCoordinates(String coordinates) {
 		this.coordinates = coordinates.trim();
 	}
 	
 	/**
-	 * Accessor for article title
+	 * Accessor for article title.
 	 * @return title string
 	 */
 	public String getTitle() {
@@ -80,7 +70,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for article title
+	 * Setter for article title.
 	 * @param title string provided by SIMBAD
 	 */
 	public void setTitle(String title) {
@@ -88,7 +78,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for last page of article
+	 * Accessor for last page of article as it appears in original publication.
 	 * @return integer page number
 	 */
 	public int getLastPage() {
@@ -96,8 +86,8 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for article last page
-	 * @param last page as string provided by SIMBAD
+	 * Setter for article last page as it appears in original publication.
+	 * @param lastPage last page as string provided by SIMBAD
 	 */
 	public void setLastPage(String lastPage) {
 		try {
@@ -108,25 +98,25 @@ public class BibCode {
 	}
 	
 	/**
-	 * TODO Provide authors as List<String> of names
-	 * Accessor for string listing of article authors
+	 * Accessor for string listing of article authors.
 	 * @return string of author names
 	 */
 	public String getAuthors() {
+		// TODO Provide authors as List<String> of names
 		return authors;
 	}
 	
 	/**
-	 * TODO Parse authors string from SIMBAD into List<String> of names
-	 * Setter for string listing of article authors
+	 * Setter for string listing of article authors.
 	 * @param authors string provided by SIMBAD
 	 */
 	public void setAuthors(String authors) {
+		// TODO Parse authors string from SIMBAD into List<String> of names
 		this.authors = authors.trim();
 	}
 	
 	/**
-	 * Accessor for string listing of publication comments
+	 * Returns any comments regarding publication status or other information.
 	 * @return comments
 	 */
 	public String getComments() {
@@ -134,7 +124,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for publication comments
+	 * Setter for publication comments.
 	 * @param comments string provided by SIMBAD
 	 */
 	public void setComments(String comments) {
@@ -142,7 +132,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for errata listings
+	 * Accessor for errata listings.
 	 * @return string of errata volumes
 	 */
 	public String getErrata() {
@@ -150,7 +140,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for errata listings
+	 * Setter for errata listings.
 	 * @param errata string provided by SIMBAD
 	 */
 	public void setErrata(String errata) {
@@ -158,7 +148,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for nomenclature dictionary
+	 * Accessor for nomenclature dictionary.
 	 * @return string representation of dictionary, if available
 	 */
 	public String getNomenclatureDictionary() {
@@ -166,15 +156,15 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for nomenclature dictionary
-	 * @param dictionary string provided by SIMBAD
+	 * Setter for nomenclature dictionary.
+	 * @param nomenclatureDictionary string provided by SIMBAD
 	 */
 	public void setNomenclatureDictionary(String nomenclatureDictionary) {
 		this.nomenclatureDictionary = nomenclatureDictionary.trim();
 	}
 	
 	/**
-	 * Accessor for publication flags
+	 * Accessor for publication flags.
 	 * @return string listing of flags
 	 */
 	public String getFlags() {
@@ -182,7 +172,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Setter for publication flags
+	 * Setter for publication flags.
 	 * @param flags string provided by SIMBAD
 	 */
 	public void setFlags(String flags) {
@@ -190,8 +180,8 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for files listing
-	 * @return string of file data, if available
+	 * Provides a list files available at Centre de Donnees, if available
+	 * @return string of file data
 	 */
 	public String getFiles() {
 		return files;
@@ -206,7 +196,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for notes related to the publication
+	 * Provides a list of notes related to the publication
 	 * @return string of notes attached to reference.
 	 */
 	public String getNotes() {
@@ -222,7 +212,7 @@ public class BibCode {
 	}
 	
 	/**
-	 * Accessor for publication status
+	 * Returns information regarding publication status, such as digitization process.
 	 * @return string of status indicators
 	 */
 	public String getStatus() {
