@@ -1,7 +1,5 @@
 package net.muneris.simbadder.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -9,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import org.jboss.logging.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class SimbadObject {
@@ -31,7 +31,14 @@ public class SimbadObject {
 	private List<BibCode> bibCodeList;
 	private String measurements;
 	private String notes;
+	private ErrorResponse errorResponse;
 
+	public static SimbadObject fromError(String responseBody) {
+		SimbadObject object = new SimbadObject();
+		object.errorResponse = new ErrorResponse(responseBody, HttpStatus.BAD_REQUEST);
+		return object;
+	}
+	
 	public OType getMainOType() {
 		return mainOType;
 	}
@@ -180,5 +187,13 @@ public class SimbadObject {
 	
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public ErrorResponse getErrorResponse() {
+		return errorResponse;
+	}
+
+	public void setErrorResponse(ErrorResponse errorResponse) {
+		this.errorResponse = errorResponse;
 	}
 }

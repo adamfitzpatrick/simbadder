@@ -65,12 +65,12 @@ public class SimbadTest {
 	}
 	
 	@Test
-	public void testExecute() {
+	public void testGetMany() {
 		Simbad simbadNull = new Simbad();
-		assertNull(simbadNull.execute());
+		assertNull(simbadNull.getMany());
 		simbadNull.setQuery(query);
-		assertNull(simbadNull.execute());
-		List<SimbadObject> objects  = simbad.execute();
+		assertNull(simbadNull.getMany());
+		List<SimbadObject> objects  = simbad.getMany().getBody();
 		assertEquals(1, objects.size());
 		assertEquals(0.0, objects.get(0).getDistance(), 0e-6);
 		assertEquals(3, objects.get(0).getOTypeList().size());
