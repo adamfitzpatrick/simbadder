@@ -16,6 +16,7 @@ public class TestConstants {
 	public static final String NAME = "name";
 	public static final byte[] BYTES = new byte[] { (byte)0x05 };
 	public static final String STRING = "this is the expected test string";
+	public static final String STRING2 = "this is another test string";
 	public static final String SIMBAD_FORMATTING_STRING = "format object name \""
 			+ "{mainOType: { %OTYPE(numeric: `N`, shortname: `S`, veryshortname: `3`, "
 			+ "verbose: `V`) }}\"";

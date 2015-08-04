@@ -29,6 +29,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-log4j")
     compile("org.springframework:spring-web")
     compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("org.springframework.hateoas:spring-hateoas")
     compile("org.springframework:spring-oxm:3.0.4.RELEASE")
     compile("org.apache.commons:commons-io:1.3.2")
     testCompile("org.springframework.boot:spring-boot-starter-test")

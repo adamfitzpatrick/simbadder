@@ -2,6 +2,7 @@ package net.muneris.simbadder.simbadapi.formatting;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * FormatField allows for simple and worry-free definition of field formatting
@@ -29,40 +30,40 @@ import java.util.List;
  */
 public enum FormatField {
 
-	MAINOTYPE("mainOType: { %OTYPE(numeric: `N`, shortname: `S`, veryshortname: `3`, "
-			+ "verbose: `V`) }"),
-	OTYPELIST("oTypeList: [%OTYPELIST({ numeric: `N`, shortname: `S`, veryshortname: "
-			+ "`3`, verbose: `V` })` }]"),
-	COO("coo: { rightAscension: `%COO(d;A;;;)`, declination: `%COO(d;D;;;)`, "
-			+ "precisionCode: `%COO(;P;;;)`, wavelength: `%COO(;W;;;)`, "
-			+ "qualityCode: `%COO(;Q;;;)`, errorEllipse: `%COO(;E;;;)`, "
-			+ "bibCode: `%COO(;B;;;)` }"),
-	DIST("distance: `%DIST`"),
-	PM("properMotion: { rightAscension: `%PM(A)`, declination: `%PM(D)`, "
-			+ "precisionCode: `%PM(P)`, qualityCode: `%PM(Q)`, "
-			+ "errorEllipse: `%PM(E)`, bibCode: `%PM(B)` }"),
-	PLX("parallax: { value: `%PLX(V)`, qualityCode: `%PLX(Q)`, error: `%PLX(E)`, "
-			+ "bibCode: `%PLX(B)` }"),
-	RV("radialVelocity: { type: `%RV(T)`, valueStored: `%RV(R)`, "
-			+ "radialVelocityValue: `%RV(V)`, redshiftValue: `%RV(Z)`, "
-			+ "czValue: `%RV(C)`, wavelength: `%RV(W)`, qualityCode: `%RV(Q)`, "
-			+ "error: `%RV(E)`, bibCode: `%RV(B)` }"),
-	FLUXLIST("fluxList: [%FLUXLIST[%*({ z1: `N`, z2: `U`, z3: `F`, "
-			+ "z4: `E`, z5: `Q`, z6: `M`, z7: `V`, "
-			+ "z8: `B` })]]"),
-	SP("spectralType: { value: `%SP(s)`, quality: `%SP(Q)`, bibCode: `%SP(B)` }"),
-	MT("morphologicalType: { value: `%SP(s)`, quality: `%SP(Q)`, bibCode: `%SP(B)` }"),
-	DIM("dimensions: {mainAxis: `%DIM(X)`, smallAxis: `%DIM(Y)`, "
-			+ "mainAxisAngle: `%DIM(A)`, inclinationCode: `%DIM(I)`, "
-			+ "wavelength: `%DIM(W)`, qualityCode: `%DIM(Q)`, bibCode: `%DIM(B)` }"),
-	MAINID("mainId: `%MAIN_ID`"),
-	IDLIST("idList: `%IDLIST[%*(S)|]`"),
-	BIBCODELIST("bibCodeList: [%BIBCODELIST(R;;;;{ bibCode: `%B`, coordinates: `%J`, "
-			+ "title: `%T`, lastPage: `%L`, authors: `%A`, comments: `%P`, "
-			+ "errata: `%E`, nomenclatureDictionary: `%D`, flags: `I`, "
-			+ "files: `%F`, notes: `%N`, status: `%S` })]"),
-	MEASLIST("measurements: `%MEASLIST[%*(CHA)\\n\\n]`"),
-	NOTES("notes: `%NOTELIST`");
+	MAINOTYPE("mainOType: { %OTYPE(numeric: !`!N!`!, shortname: !`!S!`!, veryshortname: !`!3!`!, "
+			+ "verbose: !`!V!`!) }"),
+	OTYPELIST("oTypeList: [%OTYPELIST({ numeric: !`!N!`!, shortname: !`!S!`!, veryshortname: "
+			+ "!`!3!`!, verbose: !`!V!`! })!`! }]"),
+	COO("coo: { rightAscension: !`!%COO(d;A;;;)!`!, declination: !`!%COO(d;D;;;)!`!, "
+			+ "precisionCode: !`!%COO(;P;;;)!`!, wavelength: !`!%COO(;W;;;)!`!, "
+			+ "qualityCode: !`!%COO(;Q;;;)!`!, errorEllipse: !`!%COO(;E;;;)!`!, "
+			+ "bibCode: !`!%COO(;B;;;)!`! }"),
+	DIST("distance: !`!%DIST!`!"),
+	PM("properMotion: { rightAscension: !`!%PM(A)!`!, declination: !`!%PM(D)!`!, "
+			+ "precisionCode: !`!%PM(P)!`!, qualityCode: !`!%PM(Q)!`!, "
+			+ "errorEllipse: !`!%PM(E)!`!, bibCode: !`!%PM(B)!`! }"),
+	PLX("parallax: { value: !`!%PLX(V)!`!, qualityCode: !`!%PLX(Q)!`!, error: !`!%PLX(E)!`!, "
+			+ "bibCode: !`!%PLX(B)!`! }"),
+	RV("radialVelocity: { type: !`!%RV(T)!`!, valueStored: !`!%RV(R)!`!, "
+			+ "radialVelocityValue: !`!%RV(V)!`!, redshiftValue: !`!%RV(Z)!`!, "
+			+ "czValue: !`!%RV(C)!`!, wavelength: !`!%RV(W)!`!, qualityCode: !`!%RV(Q)!`!, "
+			+ "error: !`!%RV(E)!`!, bibCode: !`!%RV(B)!`! }"),
+	FLUXLIST("fluxList: [%FLUXLIST[%*({ z1: !`!N!`!, z2: !`!U!`!, z3: !`!F!`!, "
+			+ "z4: !`!E!`!, z5: !`!Q!`!, z6: !`!M!`!, z7: !`!V!`!, "
+			+ "z8: !`!B!`! })]]"),
+	SP("spectralType: { value: !`!%SP(s)!`!, quality: !`!%SP(Q)!`!, bibCode: !`!%SP(B)!`! }"),
+	MT("morphologicalType: { value: !`!%SP(s)!`!, quality: !`!%SP(Q)!`!, bibCode: !`!%SP(B)!`! }"),
+	DIM("dimensions: {mainAxis: !`!%DIM(X)!`!, smallAxis: !`!%DIM(Y)!`!, "
+			+ "mainAxisAngle: !`!%DIM(A)!`!, inclinationCode: !`!%DIM(I)!`!, "
+			+ "wavelength: !`!%DIM(W)!`!, qualityCode: !`!%DIM(Q)!`!, bibCode: !`!%DIM(B)!`! }"),
+	MAINID("mainId: !`!%MAIN_ID!`!"),
+	IDLIST("idList: !`!%IDLIST[%*(S)|]!`!"),
+	BIBCODELIST("bibCodeList: [%BIBCODELIST(R;;;;{ bibCode: !`!%B!`!, coordinates: !`!%J!`!, "
+			+ "title: !`!%T!`!, lastPage: !`!%L!`!, authors: !`!%A!`!, comments: !`!%P!`!, "
+			+ "errata: !`!%E!`!, nomenclatureDictionary: !`!%D!`!, flags: !`!I!`!, "
+			+ "files: !`!%F!`!, notes: !`!%N!`!, status: !`!%S!`! })]"),
+	MEASLIST("measurements: !`!%MEASLIST[%*(CHA)\\n\\n]!`!"),
+	NOTES("notes: !`!%NOTELIST!`!");
 	
 	
 	private String fieldString;
@@ -73,6 +74,17 @@ public enum FormatField {
 	 */
 	public static List<FormatField> getAll() {
 		return Arrays.asList(FormatField.class.getEnumConstants());
+	}
+	
+	/**
+	 * Convenience method to return all formats except FormatField.DIST.
+	 * FormatField.DIST is only applicable when performing a search around
+	 * coordinates or an object ID.  Requesting that information from a
+	 * search that cannot provide it provokes an error response from SIMBAD.
+	 * @return list of formats excluding FormatField.DIST
+	 */
+	public static List<FormatField> getAllNotDist() {
+		return getAll().stream().filter(p -> !p.equals(FormatField.DIST)).collect(Collectors.toList());
 	}
 	
 	private FormatField(String fieldString) {
