@@ -84,8 +84,6 @@ public class Simbad {
 	/* TODO JavaDoc */
 	public Simbad() {
 		restTemplate = new RestTemplate();
-		SimbadRestInterceptor interceptor = new SimbadRestInterceptor();
-		restTemplate.setInterceptors(Collections.singletonList(interceptor));
 		mapper = new ObjectMapper();
 		mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 		mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
@@ -166,6 +164,7 @@ public class Simbad {
 	private boolean execute() {
 		if (verify()) {
 			URI uri = new UriTemplate(QUERYURL).expand(format.getFormatString(), query.getQueryString());
+			log.info(String.format("SIMBAD Request: %s", uri));
 			RequestEntity<String> request = new RequestEntity<String>(HttpMethod.GET, uri);
 			response = restTemplate.exchange(request, String.class);
 			return true;
