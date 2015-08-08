@@ -1,6 +1,7 @@
-package net.muneris.simbadder.simbadapi.formatting;
+package net.muneris.simbadder.client.simbadapi.formatting;
 
 import static org.junit.Assert.*;
+import net.muneris.simbadder.simbadapi.formatting.FormatField;
 
 import org.junit.After;
 import org.junit.Before;

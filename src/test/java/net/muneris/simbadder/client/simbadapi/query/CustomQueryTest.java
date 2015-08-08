@@ -1,7 +1,8 @@
-package net.muneris.simbadder.simbadapi.query;
+package net.muneris.simbadder.client.simbadapi.query;
 
-import static net.muneris.simbadder.testUtils.TestConstants.*;
+import static net.muneris.simbadder.client.testUtils.TestConstants.*;
 import static org.junit.Assert.*;
+import net.muneris.simbadder.simbadapi.query.CustomQuery;
 
 import org.junit.After;
 import org.junit.Before;

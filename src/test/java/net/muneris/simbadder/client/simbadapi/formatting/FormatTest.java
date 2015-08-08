@@ -1,8 +1,8 @@
-package net.muneris.simbadder.simbadapi.formatting;
+package net.muneris.simbadder.client.simbadapi.formatting;
 
-import static net.muneris.simbadder.testUtils.TestConstants.NAME;
-import static net.muneris.simbadder.testUtils.TestConstants.SIMBAD_FORMATTING_STRING;
-import static net.muneris.simbadder.testUtils.TestConstants.STRING;
+import static net.muneris.simbadder.client.testUtils.TestConstants.NAME;
+import static net.muneris.simbadder.client.testUtils.TestConstants.SIMBAD_FORMATTING_STRING;
+import static net.muneris.simbadder.client.testUtils.TestConstants.STRING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.muneris.simbadder.simbadapi.formatting.Format;
+import net.muneris.simbadder.simbadapi.formatting.FormatField;
 
 import org.junit.After;
 import org.junit.Before;

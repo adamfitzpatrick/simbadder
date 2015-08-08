@@ -1,4 +1,4 @@
-package net.muneris.simbadder.integrationtests;
+package net.muneris.simbadder.client.integrationtests;
 
 import org.junit.After;
 import org.junit.Before;

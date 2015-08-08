@@ -1,6 +1,6 @@
-package net.muneris.simbadder;
+package net.muneris.simbadder.client;
 
-import static net.muneris.simbadder.testUtils.TestConstants.SIMBAD_OBJECTS;
+import static net.muneris.simbadder.client.testUtils.TestConstants.SIMBAD_OBJECTS;
 import static org.easymock.EasyMock.createMockBuilder;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import net.muneris.simbadder.WebAppInitializer;
+import net.muneris.simbadder.client.Controller;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 
@@ -54,7 +56,7 @@ public class ControllerTest {
 
 	@Test
 	public void testGetForCustomQuery() throws Exception {
-		expect(simbad.getMany()).andReturn(new ResponseEntity<List<SimbadObject>>(SIMBAD_OBJECTS, HttpStatus.OK));
+		expect(simbad.execute()).andReturn(SIMBAD_OBJECTS);
 		replay(simbad);
 		mockMvc.perform(get("/custom-query/query coo 0 0 radius=10m"))
 			.andExpect(status().isOk());
