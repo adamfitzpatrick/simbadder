@@ -1,4 +1,4 @@
-package net.muneris.simbadder.testUtils;
+package net.muneris.simbadder.client.testUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,11 +21,11 @@ public class TestConstants {
 			+ "{mainOType: { %OTYPE(numeric: `N`, shortname: `S`, veryshortname: `3`, "
 			+ "verbose: `V`) }}\"";
 	public static final String SIMBAD_RESPONSE_STRING = "{oTypeList: [{ numeric: "
-			+ "`15.10.07.00`, short: `QSO_Candidate`, veryshort: `Q?`, verbose: "
-			+ "`Possible Quasar` }{ numeric: `15.15.04.00`, short: `QSO`, "
-			+ "veryshort: `QSO`, verbose: `Quasar` }{ numeric: `15.15.04.00`, "
-			+ "short: `QSO`, veryshort: `QSO`, verbose: `Quasar` }], oType: { numeric: "
-			+ "`15.15.04.00`, short: `QSO`, veryshort: `QSO`, verbose: `Quasar` }}";
+			+ "!`!15.10.07.00!`!, short: !`!QSO_Candidate!`!, veryshort: !`!Q?!`!, verbose: "
+			+ "!`!Possible Quasar!`! }{ numeric: !`!15.15.04.00!`!, short: !`!QSO!`!, "
+			+ "veryshort: !`!QSO!`!, verbose: !`!Quasar!`! }{ numeric: !`!15.15.04.00!`!, "
+			+ "short: !`!QSO!`!, veryshort: !`!QSO!`!, verbose: !`!Quasar!`! }], oType: { numeric: "
+			+ "!`!15.15.04.00!`!, short: !`!QSO!`!, veryshort: !`!QSO!`!, verbose: !`!Quasar!`! }}";
 	public static final String SIMBADDER_RESPONSE_STRING = "[{\"mainOType\":null,\"coo\":null,"
 			+ "\"distance\":10.0,\"parallax\":null,\"radialVelocity\":null,\"fluxList\":null,"
 			+ "\"spectralType\":null,\"morphologicalType\":null,\"dimensions\":null,"
@@ -35,7 +35,10 @@ public class TestConstants {
 	static {
 		SimbadObject simbadObject = new SimbadObject();
 		simbadObject.setDistance("10.0");
+		SimbadObject simbadObject2 = new SimbadObject();
+		simbadObject2.setDistance("100.0");
 		SIMBAD_OBJECTS.add(simbadObject);
+		SIMBAD_OBJECTS.add(simbadObject2);
 	}
 	public static final MockClientHttpRequest REQUEST = new MockClientHttpRequest();
 	static {

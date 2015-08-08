@@ -1,6 +1,6 @@
-package net.muneris.simbadder.integrationtests.simbadapi;
+package net.muneris.simbadder.client.integrationtests.simbadapi;
 
-import static net.muneris.simbadder.testUtils.TestConstants.NAME;
+import static net.muneris.simbadder.client.testUtils.TestConstants.NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +43,7 @@ public class QueryITTests {
 	public void testIdListQuery() throws JsonProcessingException {
 		IdQuery query = new IdQuery(Arrays.asList("hd1","hd2"));
 		simbad = new Simbad(query, format);
-		List<SimbadObject> objects = simbad.getMany().getBody();
+		List<SimbadObject> objects = simbad.execute();
 		assertEquals(2, objects.size());
 		String jsonString = mapper.writeValueAsString(objects.get(0));
 		assertTrue(jsonString.length() > 0);
@@ -56,7 +56,7 @@ public class QueryITTests {
 		CustomQuery query = new CustomQuery("query coo 0 0 radius=10m");
 		format.setFields(FormatField.getAll());
 		simbad = new Simbad(query, format);
-		List<SimbadObject> objects = simbad.getMany().getBody();
+		List<SimbadObject> objects = simbad.execute();
 		assertNotNull(objects);
 		assertEquals(32, objects.size());
 		String jsonString = mapper.writeValueAsString(objects.get(0));

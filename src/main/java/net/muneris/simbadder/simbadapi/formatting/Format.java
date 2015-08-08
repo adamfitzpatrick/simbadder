@@ -34,6 +34,18 @@ public class Format {
 	/** Map of field names with field formatting strings. */
 	private Map<String, String> fields;
 	
+	public static Format allNonDistance() {
+		Format format = new Format("ALL_NON_DISTANCE");
+		format.setFields(FormatField.getAllNotDist());
+		return format;
+	}
+	
+	public static Format all() {
+		Format format = new Format("ALL");
+		format.setFields(FormatField.getAll());
+		return format;
+	}
+	
 	/** Primary constructor. */
 	public Format(String formatName) {
 		this.formatName = formatName;
