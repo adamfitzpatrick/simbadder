@@ -57,7 +57,7 @@ public class ResponseAssemblerTest {
 		assertEquals(SIMBAD_OBJECTS.get(0), objects.get(0));
 		assertEquals(SIMBAD_OBJECTS.get(1), objects.get(1));
 		objects = ResponseAssembler.assembleList(simbad);
-		assertEquals(2, objects.size());
+		assertEquals(1, objects.size());
 		exception.expect(ObjectNotFoundException.class);
 		objects = ResponseAssembler.assembleList(simbad);
 	}
