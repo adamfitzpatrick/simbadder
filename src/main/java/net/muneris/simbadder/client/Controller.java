@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Controller {
 	
-	// TODO Add error handling methods, possibly not in this class.
+	// TODO Implement Mockito so this class can be properly tested with mocked static methods.
 	
 	private static final Logger log = Logger.getLogger(Controller.class);
 	
