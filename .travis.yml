@@ -1,4 +1,5 @@
+language: java
 jdk:
   - oraclejdk8
-qscript:
+script:
   ./gradlew clean build
