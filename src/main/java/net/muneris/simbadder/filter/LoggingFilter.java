@@ -44,8 +44,12 @@ public class LoggingFilter implements Filter {
 	
 	private void preFilter(ServletRequest request) {
 		requestWrapper = new HttpServletRequestWrapper((HttpServletRequest) request);
-		requestUri = requestWrapper.getRequestURI() + "?" + requestWrapper.getQueryString();
-		log.info("Recieved " + getLogString(requestUri, null));
+		String query = "";
+		if (requestWrapper.getQueryString() != null) {
+			query = "?" + requestWrapper.getQueryString();
+		}
+		requestUri = requestWrapper.getRequestURI() + query;
+		log.info("Received " + getLogString(requestUri, null));
 	}
 	
 	private void postFilter(ServletRequest request, ServletResponse response) {
