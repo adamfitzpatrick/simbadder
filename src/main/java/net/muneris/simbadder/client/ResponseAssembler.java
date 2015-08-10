@@ -2,7 +2,6 @@ package net.muneris.simbadder.client;
 
 import java.util.List;
 
-import net.muneris.simbadder.exceptions.ObjectNotFoundException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 
@@ -21,10 +20,6 @@ public class ResponseAssembler {
 	}
 	
 	public static List<SimbadObject> assembleList(Simbad simbad) {
-		List<SimbadObject> objects = simbad.execute();
-		if (objects.size() == 0) {
-			throw new ObjectNotFoundException(simbad.getQuery());
-		}
-		return objects;
+		return simbad.execute();
 	}
 }

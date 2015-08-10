@@ -51,4 +51,8 @@ public class TestConstants {
 	public static final ResponseEntity<String> RESPONSEENTITY =
 			new ResponseEntity<>(STRING, HttpStatus.ACCEPTED);
 	public static final MockClientHttpResponse CLIENTHTTPRESPONSE = new MockClientHttpResponse(BYTES, HttpStatus.ACCEPTED);
+	public static final String SIMBAD_PARSE_ERROR = "::error::::\n\n[3] java.text.ParseException: error message: "
+			+ "foo\n\nextra text";
+	public static final String SIMBAD_FORMATTING_ERROR = "::error::::\n\n[3] 'unwanted string parts here' "
+			+ "incorrect field in format: bad field";
 }
