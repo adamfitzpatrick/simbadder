@@ -90,9 +90,17 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
 	 * be replaced with standard, non-escaped double quotes to deliniate actual
 	 * returned string data components.
 	 * 
-	 * Finally, there is at least one instance in the SIMBAD database of a double
+	 * There is at least one instance in the SIMBAD database of a double
 	 * quote being improperly implemented as twin backticks followed by twin
 	 * single quotes.  These are replaced with escaped double quotes.
+	 * 
+	 * For data that can return arrays, such as OTYPELIST, SIMBAD removes any
+	 * trailing literals from the format string at the end of the array only.
+	 * As a result, closing quotes (formatted as !`!) and braces must be
+	 * repeated outside of the SIMBAD formatting function to properly close array
+	 * data.  As a result, these literals will appear inside the square brackets
+	 * when SIMBAD provides an empty array response, and must be removed to
+	 * allow processing.
 	 * 
 	 * As a final note, it is important to recall that regular expressions in
 	 * Java must be escaped properly as Java characters so that they can't be
@@ -110,6 +118,8 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
 	private String transformResponse(String response) {
 
 		String simbadString = "[" + response.trim() + "]";
+		// Remove extra string literals from array
+		simbadString = simbadString.replaceAll("\\[!`! \\}\\]", "[]");
 		simbadString = simbadString.replaceAll("\\}\\{", "},{");
 		simbadString = simbadString.replaceAll("\\}\n", "},");
 		simbadString = simbadString.replaceAll("\\\"", "\\\\\"");

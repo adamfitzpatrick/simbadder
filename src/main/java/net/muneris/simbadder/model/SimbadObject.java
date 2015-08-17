@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import org.jboss.logging.Logger;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class SimbadObject {
+public class SimbadObject extends ResourceSupport{
 
 	private static final Logger log = Logger.getLogger(SimbadObject.class);
 	
