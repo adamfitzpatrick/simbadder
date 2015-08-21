@@ -1,6 +1,7 @@
 package net.muneris.simbadder.client;
 
 import net.muneris.simbadder.WebAppInitializer;
+import net.muneris.simbadder.client.Controller;
 import net.muneris.simbadder.simbadapi.Simbad;
 
 import org.junit.After;

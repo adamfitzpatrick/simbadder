@@ -1,7 +1,7 @@
-package net.muneris.simbadder.client.model;
+package net.muneris.simbadder.model;
 
 import static org.junit.Assert.*;
-import static net.muneris.simbadder.client.testUtils.TestConstants.*;
+import static net.muneris.simbadder.testUtils.TestConstants.*;
 import net.muneris.simbadder.model.OType;
 
 import org.junit.After;

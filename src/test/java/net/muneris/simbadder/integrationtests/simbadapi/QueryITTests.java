@@ -1,6 +1,6 @@
-package net.muneris.simbadder.client.integrationtests.simbadapi;
+package net.muneris.simbadder.integrationtests.simbadapi;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.NAME;
+import static net.muneris.simbadder.testUtils.TestConstants.NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

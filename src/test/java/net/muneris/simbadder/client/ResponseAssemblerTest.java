@@ -1,6 +1,6 @@
 package net.muneris.simbadder.client;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.SIMBAD_OBJECTS;
+import static net.muneris.simbadder.testUtils.TestConstants.SIMBAD_OBJECTS;
 import static org.easymock.EasyMock.createMockBuilder;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.List;
 
+import net.muneris.simbadder.client.ResponseAssembler;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.query.IdQuery;
