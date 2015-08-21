@@ -1,7 +1,7 @@
-package net.muneris.simbadder.client.simbadapi;
+package net.muneris.simbadder.simbadapi;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.NAME;
-import static net.muneris.simbadder.client.testUtils.TestConstants.SIMBAD_RESPONSE_STRING;
+import static net.muneris.simbadder.testUtils.TestConstants.NAME;
+import static net.muneris.simbadder.testUtils.TestConstants.SIMBAD_RESPONSE_STRING;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;

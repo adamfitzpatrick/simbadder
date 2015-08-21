@@ -1,6 +1,6 @@
 package net.muneris.simbadder.exception;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.*;
+import static net.muneris.simbadder.testUtils.TestConstants.*;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 

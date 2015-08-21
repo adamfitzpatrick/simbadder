@@ -1,6 +1,6 @@
-package net.muneris.simbadder.client.model;
+package net.muneris.simbadder.model;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.STRING;
+import static net.muneris.simbadder.testUtils.TestConstants.STRING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import net.muneris.simbadder.model.Coo;

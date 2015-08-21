@@ -70,7 +70,7 @@ public class Simbad {
 	 * Determines the formatting specifier that will be provided to SIMBAD.
 	 * The formatting specifier dictates exactly what information is returned
 	 * by simbad and how it is presented.
-	 * @see net.muneris.simbadder.client.simbadapi.formatting
+	 * @see net.muneris.simbadder.simbadapi.formatting
 	 */
 	private Format format;
 	/** The actual query submitted to SIMBAD. */

@@ -7,12 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.muneris.simbadder.exception.AroundIdQueryException;
+import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
 import net.muneris.simbadder.simbadapi.formatting.FormatField;
-import net.muneris.simbadder.simbadapi.query.AroundIdQuery;
 import net.muneris.simbadder.simbadapi.query.CustomQuery;
 import net.muneris.simbadder.simbadapi.query.IdQuery;
 import net.muneris.simbadder.simbadapi.query.RadiusUnit;
@@ -70,25 +69,22 @@ public class Controller {
 		try {
 			radius = Double.valueOf(radiusStr);
 		} catch (NumberFormatException e) {
-			throw new AroundIdQueryException(String.format("Badly formatted radius value: %s", radiusStr));
+			throw new IdQueryException(String.format("Badly formatted radius value: %s", radiusStr));
 		}
 		
 		RadiusUnit unit;
 		if (unitStr !=null) {
 			unit = RadiusUnit.parseString(unitStr);
 			if (unit == null) {
-				throw new AroundIdQueryException(String.format("Unable to parse radius unit: %s", unitStr));
+				throw new IdQueryException(String.format("Unable to parse radius unit: %s", unitStr));
 			}
 		} else {
 			unit = RadiusUnit.DEGREES;
 		}
 		
-		AroundIdQuery query = new AroundIdQuery(id, radius, unit);
-		Format format = new Format("asdf");
-		format.addField(FormatField.OTYPELIST);
-		format.addField(FormatField.MAINID);
+		IdQuery query = new IdQuery(id, radius, unit);
 		List<SimbadObject> objects = addListSelfRel(ResponseAssembler
-				.assembleList(new Simbad(query, format)));
+				.assembleList(new Simbad(query, Format.all())));
 		return new ResponseEntity<List<SimbadObject>>(objects, HttpStatus.OK);
 	}
 	
@@ -101,6 +97,7 @@ public class Controller {
 	public ResponseEntity<List<SimbadObject>> getForIdListQuery(
 			@RequestParam(value="in", required=true) String[] idListString) {
 		IdQuery query = new IdQuery(Arrays.asList(idListString));
+
 		List<SimbadObject> objects = addListSelfRel(ResponseAssembler
 				.assembleList(new Simbad(query, Format.allNonDistance())));
 		return new ResponseEntity<List<SimbadObject>>(objects, HttpStatus.OK);

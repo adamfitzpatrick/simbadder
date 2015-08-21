@@ -1,8 +1,8 @@
-package net.muneris.simbadder.client.simbadapi.formatting;
+package net.muneris.simbadder.simbadapi.formatting;
 
-import static net.muneris.simbadder.client.testUtils.TestConstants.NAME;
-import static net.muneris.simbadder.client.testUtils.TestConstants.SIMBAD_FORMATTING_STRING;
-import static net.muneris.simbadder.client.testUtils.TestConstants.STRING;
+import static net.muneris.simbadder.testUtils.TestConstants.NAME;
+import static net.muneris.simbadder.testUtils.TestConstants.SIMBAD_FORMATTING_STRING;
+import static net.muneris.simbadder.testUtils.TestConstants.STRING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

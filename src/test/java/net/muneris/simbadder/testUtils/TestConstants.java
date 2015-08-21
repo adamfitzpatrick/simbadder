@@ -1,4 +1,4 @@
-package net.muneris.simbadder.client.testUtils;
+package net.muneris.simbadder.testUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;

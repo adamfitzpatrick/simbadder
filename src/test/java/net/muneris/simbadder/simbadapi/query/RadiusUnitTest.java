@@ -1,4 +1,4 @@
-package net.muneris.simbadder.client.simbadapi.query;
+package net.muneris.simbadder.simbadapi.query;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
