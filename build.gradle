@@ -15,6 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
+apply plugin: 'checkstyle'
 
 jar {
     baseName = 'simbadder'
@@ -39,6 +40,10 @@ dependencies {
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("junit:junit")
     testCompile("org.easymock:easymock:3.3.1")
+}
+
+checkstyle {
+   configFile = new File(rootDir, "checkstyle.xml")
 }
 
 task wrapper(type: Wrapper) {

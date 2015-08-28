@@ -17,53 +17,61 @@ import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+/**
+ * Allows logging of all requests immediately prior to passing them to SIMBAD,
+ * and all responses immediately prior to processing from SIMBAD.
+ * 
+ * @author Adam Fitzpatrick (adam@muneris.net)
+ *
+ */
 @Component
 public class LoggingFilter implements Filter {
 
-	private static final Logger log = Logger.getLogger(LoggingFilter.class);
+    private static final Logger LOGGER = Logger.getLogger(LoggingFilter.class);
 
-	private HttpServletRequestWrapper requestWrapper;
-	private String requestUri;
-	
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
+    private HttpServletRequestWrapper requestWrapper;
+    private String requestUri;
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
-			FilterChain chain) throws IOException, ServletException {
-		preFilter(request);
-		chain.doFilter(request, response);
-		postFilter(request, response);
-	}
+    @Override
+    public void destroy() {
+        // Not implemented
+    }
 
-	@Override
-	public void destroy() {
-		// Not implemented
-	}
-	
-	private void preFilter(ServletRequest request) {
-		requestWrapper = new HttpServletRequestWrapper((HttpServletRequest) request);
-		String query = "";
-		if (requestWrapper.getQueryString() != null) {
-			query = "?" + requestWrapper.getQueryString();
-		}
-		requestUri = requestWrapper.getRequestURI() + query;
-		log.info("Received " + getLogString(requestUri, null));
-	}
-	
-	private void postFilter(ServletRequest request, ServletResponse response) {
-		HttpServletResponseWrapper responseWrapper =
-				new HttpServletResponseWrapper((HttpServletResponse) response);
-		log.info("Completed " + getLogString(requestUri, responseWrapper.getStatus()));
-	}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        preFilter(request);
+        chain.doFilter(request, response);
+        postFilter(request, response);
+    }
 
-	private String getLogString(String requestUri, Integer statusCode) {
-		String statusStr = "";
-		if (statusCode != null) {
-			statusStr = String.format(" with %s (%s)", statusCode,
-					HttpStatus.valueOf(statusCode).name());
-		}
-		return String.format("request for resource %s%s", requestUri, statusStr);
-	}
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
+
+    private String getLogString(String requestUri, Integer statusCode) {
+        String statusStr = "";
+        if (statusCode != null) {
+            statusStr =
+                    String.format(" with %s (%s)", statusCode, HttpStatus.valueOf(statusCode)
+                            .name());
+        }
+        return String.format("request for resource %s%s", requestUri, statusStr);
+    }
+
+    private void postFilter(ServletRequest request, ServletResponse response) {
+        HttpServletResponseWrapper responseWrapper =
+                new HttpServletResponseWrapper((HttpServletResponse) response);
+        LOGGER.info("Completed " + getLogString(requestUri, responseWrapper.getStatus()));
+    }
+
+    private void preFilter(ServletRequest request) {
+        requestWrapper = new HttpServletRequestWrapper((HttpServletRequest) request);
+        String query = "";
+        if (requestWrapper.getQueryString() != null) {
+            query = "?" + requestWrapper.getQueryString();
+        }
+        requestUri = requestWrapper.getRequestURI() + query;
+        LOGGER.info("Received " + getLogString(requestUri, null));
+    }
 }
