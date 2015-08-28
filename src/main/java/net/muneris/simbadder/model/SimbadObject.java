@@ -8,192 +8,186 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 
 import org.jboss.logging.Logger;
 import org.springframework.hateoas.ResourceSupport;
-import org.springframework.http.HttpStatus;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-public class SimbadObject extends ResourceSupport{
+/**
+ * Data model to contain all object information that is offered by SIMBAD.
+ * Refer to constituent objects for more information.
+ * 
+ * @author Adam Fitzpatrick (adam@muneris.net)
+ *
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SimbadObject extends ResourceSupport {
 
-	private static final Logger log = Logger.getLogger(SimbadObject.class);
-	
-	private OType mainOType;
-	private List<OType> oTypeList;
-	private Coo coo;
-	private double distance;
-	private ProperMotion pm;
-	private Parallax parallax;
-	private RadialVelocity radialVelocity;
-	private List<Flux> fluxList;
-	private Type spectralType;
-	private Type morphologicalType;
-	private Dimensions dimensions;
-	private String mainId;
-	private List<Identifier> idList;
-	private List<BibCode> bibCodeList;
-	private String measurements;
-	private String notes;
-	private ErrorResponse errorResponse;
+    private static final Logger LOGGER = Logger.getLogger(SimbadObject.class);
 
-	public static SimbadObject fromError(String responseBody) {
-		SimbadObject object = new SimbadObject();
-		object.errorResponse = new ErrorResponse(responseBody, HttpStatus.BAD_REQUEST);
-		return object;
-	}
-	
-	public OType getMainOType() {
-		return mainOType;
-	}
+    private OType mainOType;
+    private List<OType> oTypeList;
+    private Coo coo;
+    private double distance;
+    private ProperMotion pm;
+    private Parallax parallax;
+    private RadialVelocity radialVelocity;
+    private List<Flux> fluxList;
+    private Type spectralType;
+    private Type morphologicalType;
+    private Dimensions dimensions;
+    private String mainId;
+    private List<Identifier> idList;
+    private List<BibCode> bibCodeList;
+    private String measurements;
+    private String notes;
 
-	public void setMainOType(OType mainOType) {
-		this.mainOType = mainOType;
-	}
+    public List<BibCode> getBibCodeList() {
+        return bibCodeList;
+    }
 
-	@JsonGetter("oTypeList")
-	public List<OType> getOTypeList() {
-		return oTypeList;
-	}
+    public Coo getCoo() {
+        return coo;
+    }
 
-	@JsonSetter("oTypeList")
-	public void setOTypeList(List<OType> oTypeList) {
-		this.oTypeList = oTypeList;
-	}
-	
-	public Coo getCoo() {
-		return coo;
-	}
-	
-	public void setCoo(Coo coo) {
-		this.coo = coo;
-	}
-	
-	public double getDistance() {
-		return distance;
-	}
-	
-	public void setDistance(String distance) {
-		try {
-			this.distance = Double.parseDouble(distance.trim());
-		} catch (NumberFormatException e) {
-			log.debug("Unable to parse distance: " + distance);
-		}
-	}
-	
-	public ProperMotion getProperMotion() {
-		return pm;
-	}
-	
-	public void setProperMotion(ProperMotion pm) {
-		this.pm = pm;
-	}
-	
-	public Parallax getParallax() {
-		return parallax;
-	}
-	
-	public void setParallax(Parallax parallax) {
-		this.parallax = parallax;
-	}
-	
-	public RadialVelocity getRadialVelocity() {
-		return radialVelocity;
-	}
-	
-	public void setRadialVelocity(RadialVelocity radialVelocity) {
-		this.radialVelocity = radialVelocity;
-	}
-	
-	public List<Flux> getFluxList() {
-		return fluxList;
-	}
-	
-	public void setFluxList(List<Flux> fluxList) {
-		this.fluxList = fluxList;
-	}
-	
-	public Type getSpectralType() {
-		return spectralType;
-	}
-	
-	public void setSpectralType(Type spectralType) {
-		this.spectralType = spectralType;
-	}
-	
-	public Type getMorphologicalType() {
-		return morphologicalType;
-	}
-	
-	public void setMorphologicalType(Type morphologicalType) {
-		this.morphologicalType = morphologicalType;
-	}
-	
-	public Dimensions getDimensions() {
-		return dimensions;
-	}
-	
-	public void setDimensions(Dimensions dimensions) {
-		this.dimensions = dimensions;
-	}
-	
-	public String getMainId() {
-		return mainId;
-	}
-	
-	public void setMainId(String mainId) {
-		this.mainId = mainId.trim();
-	}
-	
-	public List<Identifier> getIdList() {
-		return idList;
-	}
-	
-	public void setIdList(String identifierString) {
-		this.idList = Identifier.idListFactory(identifierString);
-		
-	}
-	
-	public List<BibCode> getBibCodeList() {
-		return bibCodeList;
-	}
-	
-	public void setBibCodeList(List<BibCode> bibCodeList) {
-		this.bibCodeList = bibCodeList;
-	}
-	
-	/**
-	 * Measurements data provided by SIMBAD is formatted as an ascii table
-	 * using pipe characters to separate columns, but some columns consist
-	 * of data pairs and attempts to format data under the expectation of
-	 * monospaced fonts, resulting in information that is difficult to parse
-	 * for a general use-case.  As a result, this service simply forwards the
-	 * data from SIMBAD directly as a String.  Extracting desired information
-	 * from the String is left to the end-user and their individual needs.
-	 * @return a string of measurement data from SIMBAD.
-	 * @see http://simbad.u-strasbg.fr/simbad/sim-help?Page=sim-fscript#Formats
-	 */
-	public String getMeasurements() {
-		return measurements;
-	}
-	
-	/**
-	 * Refer to comments for getMeasurements above.
-	 * @param string of measurement data from SIMBAD.
-	 */
-	public void setMeasurements(String measurements) {
-		this.measurements = measurements;
-	}
-	
-	public String getNotes() {
-		return notes;
-	}
-	
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+    public Dimensions getDimensions() {
+        return dimensions;
+    }
 
-	public ErrorResponse getErrorResponse() {
-		return errorResponse;
-	}
+    public double getDistance() {
+        return distance;
+    }
 
-	public void setErrorResponse(ErrorResponse errorResponse) {
-		this.errorResponse = errorResponse;
-	}
+    public List<Flux> getFluxList() {
+        return fluxList;
+    }
+
+    public List<Identifier> getIdList() {
+        return idList;
+    }
+
+    public String getMainId() {
+        return mainId;
+    }
+
+    public OType getMainOType() {
+        return mainOType;
+    }
+
+    /**
+     * Measurements data provided by SIMBAD is formatted as an ascii table using
+     * pipe characters to separate columns, but some columns consist of data
+     * pairs and attempts to format data under the expectation of monospaced
+     * fonts, resulting in information that is difficult to parse for a general
+     * use-case. As a result, this service simply forwards the data from SIMBAD
+     * directly as a String. Extracting desired information from the String is
+     * left to the end-user and their individual needs.
+     *
+     * @return a string of measurement data from SIMBAD.
+     * @see http://simbad.u-strasbg.fr/simbad/sim-help?Page=sim-fscript#Formats
+     */
+    public String getMeasurements() {
+        return measurements;
+    }
+
+    public Type getMorphologicalType() {
+        return morphologicalType;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    @JsonGetter("oTypeList")
+    public List<OType> getOTypeList() {
+        return oTypeList;
+    }
+
+    public Parallax getParallax() {
+        return parallax;
+    }
+
+    public ProperMotion getProperMotion() {
+        return pm;
+    }
+
+    public RadialVelocity getRadialVelocity() {
+        return radialVelocity;
+    }
+
+    public Type getSpectralType() {
+        return spectralType;
+    }
+
+    public void setBibCodeList(List<BibCode> bibCodeList) {
+        this.bibCodeList = bibCodeList;
+    }
+
+    public void setCoo(Coo coo) {
+        this.coo = coo;
+    }
+
+    public void setDimensions(Dimensions dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public void setDistance(String distance) {
+        try {
+            this.distance = Double.parseDouble(distance.trim());
+        } catch (NumberFormatException e) {
+            LOGGER.debug("Unable to parse distance: " + distance);
+        }
+    }
+
+    public void setFluxList(List<Flux> fluxList) {
+        this.fluxList = fluxList;
+    }
+
+    public void setIdList(String identifierString) {
+        this.idList = Identifier.idListFactory(identifierString);
+
+    }
+
+    public void setMainId(String mainId) {
+        this.mainId = mainId.trim();
+    }
+
+    public void setMainOType(OType mainOType) {
+        this.mainOType = mainOType;
+    }
+
+    /**
+     * Refer to comments for getMeasurements above.
+     *
+     * @param measurements
+     *            string of measurement data from SIMBAD.
+     */
+    public void setMeasurements(String measurements) {
+        this.measurements = measurements;
+    }
+
+    public void setMorphologicalType(Type morphologicalType) {
+        this.morphologicalType = morphologicalType;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    @JsonSetter("oTypeList")
+    public void setOTypeList(List<OType> oTypeList) {
+        this.oTypeList = oTypeList;
+    }
+
+    public void setParallax(Parallax parallax) {
+        this.parallax = parallax;
+    }
+
+    public void setProperMotion(ProperMotion pm) {
+        this.pm = pm;
+    }
+
+    public void setRadialVelocity(RadialVelocity radialVelocity) {
+        this.radialVelocity = radialVelocity;
+    }
+
+    public void setSpectralType(Type spectralType) {
+        this.spectralType = spectralType;
+    }
 }
