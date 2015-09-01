@@ -8,6 +8,10 @@
 
 <module name="Checker">
 
+	<module name="SuppressionFilter">
+		<property name="file" value="${basedir}/config/suppressions.xml"/>
+	</module>
+	
 	<module name="FileTabCharacter">
 		<!-- Checks that there are no tab characters in the file. -->
 	</module>
