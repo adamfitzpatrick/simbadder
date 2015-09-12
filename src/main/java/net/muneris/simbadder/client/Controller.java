@@ -1,7 +1,7 @@
 package net.muneris.simbadder.client;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static net.muneris.simbadder.client.HypertextStateProvider.addListSelfRel;
+import static net.muneris.simbadder.client.HypertextStateProvider.addSingleSelfRel;
 
 import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
@@ -13,9 +13,7 @@ import net.muneris.simbadder.simbadapi.query.RadiusUnit;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class Controller {
-
-    // TODO Implement Mockito so this class can be properly tested with mocked
-    // static methods.
 
     /**
      * Query around a single identifier, using a radius value and specifying
@@ -85,11 +80,12 @@ public class Controller {
      * @return list of JSON formatted astronomical objects
      */
     @RequestMapping(value = "/custom-query/{queryString}", method = RequestMethod.GET)
-    public HttpEntity<List<SimbadObject>> getForCustomQuery(@PathVariable(
+    public ResponseEntity<List<SimbadObject>> getForCustomQuery(@PathVariable(
             value = "queryString") String queryString) {
         CustomQuery query = new CustomQuery(queryString);
         List<SimbadObject> objects =
-                ResponseAssembler.assembleList(new Simbad(query, Format.allNonDistance()));
+                addListSelfRel(ResponseAssembler.assembleList(new Simbad(query, Format
+                        .allNonDistance())));
         return new ResponseEntity<List<SimbadObject>>(objects, HttpStatus.OK);
     }
 
@@ -126,15 +122,5 @@ public class Controller {
                 addListSelfRel(ResponseAssembler.assembleList(new Simbad(query, Format
                         .allNonDistance())));
         return new ResponseEntity<List<SimbadObject>>(objects, HttpStatus.OK);
-    }
-
-    private List<SimbadObject> addListSelfRel(List<SimbadObject> objects) {
-        return objects.stream().map(this::addSingleSelfRel).collect(Collectors.toList());
-    }
-
-    private SimbadObject addSingleSelfRel(SimbadObject object) {
-        object.add(linkTo(methodOn(Controller.class).getForId(object.getMainId()))
-                .withSelfRel());
-        return object;
     }
 }

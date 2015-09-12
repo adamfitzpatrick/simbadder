@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Thrown by {@link SimbadExceptionResponseHandler} when SIMBAD responds
- * with an error indicating it is unable to parse the request information
- * it received.  This can be interpreted as a lower-level error than would
- * be returned as a result of improper formatting or query information.  In
- * other words, SIMBAD couldn't even get as far as distinguishing format and
- * query request components.
- * 
+ * Thrown by {@link SimbadExceptionResponseHandler} when SIMBAD responds with an
+ * error indicating it is unable to parse the request information it received.
+ * This can be interpreted as a lower-level error than would be returned as a
+ * result of improper formatting or query information. In other words, SIMBAD
+ * couldn't even get as far as distinguishing format and query request
+ * components.
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

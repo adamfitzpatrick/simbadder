@@ -22,11 +22,11 @@ import org.springframework.util.StreamUtils;
 
 /**
  * Message converter to produce genuine JSON messages.
- * 
- * SIMBAD can be coerced into providing a response which looks like JSON, but the
- * returned content type is always Text/Plain, and there are adjustments that must
- * be made to the response to assure readability.
- * 
+ *
+ * SIMBAD can be coerced into providing a response which looks like JSON, but
+ * the returned content type is always Text/Plain, and there are adjustments
+ * that must be made to the response to assure readability.
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */
@@ -42,8 +42,7 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
-        objectMapper
-                .configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+        objectMapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
     }
 
     /**
@@ -111,8 +110,7 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
             HttpInputMessage inputMessage) {
         String message = "";
         try {
-            message =
-                    StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
+            message = StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new InputMessageNotReadableException(e);
         }

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 /**
  * Allows logging of all requests immediately prior to passing them to SIMBAD,
  * and all responses immediately prior to processing from SIMBAD.
- * 
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

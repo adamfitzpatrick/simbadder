@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Data model for object dimensions from SIMBAD.
- * 
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

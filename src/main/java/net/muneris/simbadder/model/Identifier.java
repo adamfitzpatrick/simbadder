@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Data model for accepting Identifier information from SIMBAD.
- * 
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

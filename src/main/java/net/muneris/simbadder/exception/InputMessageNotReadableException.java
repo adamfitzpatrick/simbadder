@@ -18,8 +18,7 @@ public class InputMessageNotReadableException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger
-            .getLogger(InputMessageNotReadableException.class);
+    private static final Logger LOGGER = Logger.getLogger(InputMessageNotReadableException.class);
 
     public InputMessageNotReadableException(IOException e) {
         LOGGER.error(e);
