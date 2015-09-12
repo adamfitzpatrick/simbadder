@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 /**
  * Data model for accepting flux information from SIMBAD.
- * 
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

@@ -3,9 +3,9 @@ package net.muneris.simbadder.simbadapi.query;
 import java.util.Arrays;
 
 /**
- * Allows radius units to be specified with a number of different strings
- * while ensuring that SIMBAD will understand the request.
- * 
+ * Allows radius units to be specified with a number of different strings while
+ * ensuring that SIMBAD will understand the request.
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

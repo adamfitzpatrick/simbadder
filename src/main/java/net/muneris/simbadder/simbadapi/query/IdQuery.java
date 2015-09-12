@@ -78,12 +78,10 @@ public class IdQuery implements Query {
     @Override
     public String getQueryString() {
         if (wildcard) {
-            return "query id wildcard "
-                    + identifiers.stream().collect(Collectors.joining("\n"));
+            return "query id wildcard " + identifiers.stream().collect(Collectors.joining("\n"));
         }
         if (around) {
-            return String.format("query around %s radius=%s%s", identifiers.get(0), radius,
-                    unit);
+            return String.format("query around %s radius=%s%s", identifiers.get(0), radius, unit);
         }
         return "query id " + identifiers.stream().collect(Collectors.joining("\n"));
     }

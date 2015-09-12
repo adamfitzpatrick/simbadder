@@ -6,7 +6,7 @@ import org.jboss.logging.Logger;
  * Provides a data model for bibCodes (bibliography codes) provided by SIMBAD.
  * Please refer to the University of Strasbourg's website for more information
  * on bibCodes and how they are used.
- * 
+ *
  * @see http://simbad.u-strasbg.fr/guide/sim-ref.htx
  * @see http://simbad.u-strasbg.fr/guide/refcode/refcode-paper.html
  *

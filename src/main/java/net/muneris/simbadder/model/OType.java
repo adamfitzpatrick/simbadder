@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 
 /**
  * Data model for acception information regarding object type from SIMBAD.
- * 
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

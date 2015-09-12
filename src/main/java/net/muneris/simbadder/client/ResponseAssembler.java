@@ -42,8 +42,8 @@ public class ResponseAssembler {
     public static SimbadObject assembleSingle(Simbad simbad) {
         List<SimbadObject> objects = assembleList(simbad);
         if (objects.size() > 1) {
-            LOGGER.warn(String.format(
-                    "Expected a single object response, but got %s objects.", objects.size()));
+            LOGGER.warn(String.format("Expected a single object response, but got %s objects.",
+                    objects.size()));
         }
         return objects.get(0);
     }

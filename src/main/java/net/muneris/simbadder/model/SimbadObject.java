@@ -10,9 +10,9 @@ import org.jboss.logging.Logger;
 import org.springframework.hateoas.ResourceSupport;
 
 /**
- * Data model to contain all object information that is offered by SIMBAD.
- * Refer to constituent objects for more information.
- * 
+ * Data model to contain all object information that is offered by SIMBAD. Refer
+ * to constituent objects for more information.
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

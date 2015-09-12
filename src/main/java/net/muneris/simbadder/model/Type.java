@@ -1,9 +1,9 @@
 package net.muneris.simbadder.model;
 
 /**
- * Data object for accepting spectral and morphological type information
- * from SIMBAD.
- * 
+ * Data object for accepting spectral and morphological type information from
+ * SIMBAD.
+ *
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */

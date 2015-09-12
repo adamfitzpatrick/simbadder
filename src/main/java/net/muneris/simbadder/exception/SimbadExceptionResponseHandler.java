@@ -25,12 +25,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "SIMBAD responded with an error.")
 public class SimbadExceptionResponseHandler extends RuntimeException {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(SimbadExceptionResponseHandler.class);
+    private static final Logger LOGGER = Logger.getLogger(SimbadExceptionResponseHandler.class);
     private static final long serialVersionUID = 2759986110400827227L;
 
-    private static final String EXCEPTION_PATTERN_STRING =
-            "(?<=(java\\.text\\.))[A-Za-z]{1,50}";
+    private static final String EXCEPTION_PATTERN_STRING = "(?<=(java\\.text\\.))[A-Za-z]{1,50}";
     private static final String MESSAGE_PATTERN_STRING = "(?<=(%s: ))[A-Za-z0-9 :]+";
     private static final String FORMATTING_PATTERN_STRING =
             "(?<=(incorrect field in format: ))[A-Za-z0-9 ]+";
@@ -64,8 +62,7 @@ public class SimbadExceptionResponseHandler extends RuntimeException {
     }
 
     private void parseExceptionMessage() {
-        Pattern pattern =
-                Pattern.compile(String.format(MESSAGE_PATTERN_STRING, exceptionString));
+        Pattern pattern = Pattern.compile(String.format(MESSAGE_PATTERN_STRING, exceptionString));
         Matcher matcher = pattern.matcher(e.getMessage());
         if (matcher.find()) {
             exceptionMessage = matcher.group(0);
