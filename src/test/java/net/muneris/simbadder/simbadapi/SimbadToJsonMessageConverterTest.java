@@ -59,8 +59,8 @@ public class SimbadToJsonMessageConverterTest {
     @Test
     public void testReadWithIOException() throws IOException {
         ReflectionTestUtils.setField(converter, "objectMapper", mapper);
-        expect(mapper.readValue(String.format("[%s]", STRING), SimbadObject[].class)).andThrow(
-                new IOException());
+        expect(mapper.readValue(String.format("[%s]", STRING), SimbadObject[].class))
+                .andThrow(new IOException());
         replay(mapper);
         exception.expect(InputMessageNotReadableException.class);
         converter.read(SimbadObject[].class, message);
@@ -76,8 +76,8 @@ public class SimbadToJsonMessageConverterTest {
     @Test
     public void testReadWithJsonParseException() throws IOException {
         ReflectionTestUtils.setField(converter, "objectMapper", mapper);
-        expect(mapper.readValue(String.format("[%s]", STRING), SimbadObject[].class)).andThrow(
-                new JsonParseException(null, null));
+        expect(mapper.readValue(String.format("[%s]", STRING), SimbadObject[].class))
+                .andThrow(new JsonParseException(null, null));
         replay(mapper);
         exception.expect(SimbadExceptionResponseHandler.class);
         converter.read(SimbadObject[].class, message);

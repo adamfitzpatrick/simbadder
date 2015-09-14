@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,
-        reason = "SIMBAD returned an unreadable response.")
+reason = "SIMBAD returned an unreadable response.")
 public class InputMessageNotReadableException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(InputMessageNotReadableException.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(InputMessageNotReadableException.class);
 
     public InputMessageNotReadableException(IOException e) {
         LOGGER.error(e);

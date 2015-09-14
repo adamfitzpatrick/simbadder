@@ -17,13 +17,14 @@ import java.util.stream.Collectors;
  */
 public class HypertextStateProvider {
 
-    public static List<SimbadObject> addListSelfRel(List<SimbadObject> objects) {
-        return objects.stream().map(HypertextStateProvider::addSingleSelfRel)
-                .collect(Collectors.toList());
+    public static SimbadObject addObjectSelfRel(SimbadObject object) {
+        object.add(linkTo(methodOn(Controller.class).getForId(object.getMainId()))
+                .withSelfRel());
+        return object;
     }
 
-    public static SimbadObject addSingleSelfRel(SimbadObject object) {
-        object.add(linkTo(methodOn(Controller.class).getForId(object.getMainId())).withSelfRel());
-        return object;
+    public static List<SimbadObject> addObjectSelfRelForList(List<SimbadObject> objects) {
+        return objects.stream().map(HypertextStateProvider::addObjectSelfRel)
+                .collect(Collectors.toList());
     }
 }
