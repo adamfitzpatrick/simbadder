@@ -27,17 +27,11 @@ import org.junit.Test;
  */
 public class ResponseAssemblerTestIT {
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         RestAssured.port = 7901;
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @After
     public void tearDown() throws Exception {
     }
