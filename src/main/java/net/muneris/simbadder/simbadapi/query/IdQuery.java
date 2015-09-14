@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 public class IdQuery implements Query {
 
     private List<String> identifiers;
-    private boolean wildcard = false;
     private boolean around = false;
     private double radius;
     private RadiusUnit unit;
@@ -52,11 +51,6 @@ public class IdQuery implements Query {
     public IdQuery(String identifier) {
         this();
         this.identifiers.add(identifier);
-    }
-
-    public IdQuery(String identifier, boolean wildcard) {
-        this(identifier);
-        this.wildcard = true;
     }
 
     public IdQuery(String identifier, double radius, RadiusUnit unit) {
@@ -77,11 +71,9 @@ public class IdQuery implements Query {
 
     @Override
     public String getQueryString() {
-        if (wildcard) {
-            return "query id wildcard " + identifiers.stream().collect(Collectors.joining("\n"));
-        }
         if (around) {
-            return String.format("query around %s radius=%s%s", identifiers.get(0), radius, unit);
+            return String.format("query around %s radius=%s%s", identifiers.get(0), radius,
+                    unit);
         }
         return "query id " + identifiers.stream().collect(Collectors.joining("\n"));
     }

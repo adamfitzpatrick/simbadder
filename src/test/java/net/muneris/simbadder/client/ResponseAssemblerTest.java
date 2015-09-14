@@ -40,19 +40,19 @@ public class ResponseAssemblerTest {
 
     @Test()
     public void testAssembleList() {
-        List<SimbadObject> objects = ResponseAssembler.assembleList(simbad);
+        List<SimbadObject> objects = ResponseAssembler.assembleObjectList(simbad).objects;
         assertEquals(2, objects.size());
         assertEquals(SIMBAD_OBJECTS.get(0), objects.get(0));
         assertEquals(SIMBAD_OBJECTS.get(1), objects.get(1));
-        objects = ResponseAssembler.assembleList(simbad);
+        objects = ResponseAssembler.assembleObjectList(simbad).objects;
         assertEquals(1, objects.size());
     }
 
     @Test
     public void testAssembleSingle() {
-        SimbadObject object = ResponseAssembler.assembleSingle(simbad);
+        SimbadObject object = ResponseAssembler.assembleSingleObject(simbad);
         assertEquals(SIMBAD_OBJECTS.get(0), object);
-        object = ResponseAssembler.assembleSingle(simbad);
+        object = ResponseAssembler.assembleSingleObject(simbad);
         assertEquals(SIMBAD_OBJECTS.get(0), object);
     }
 

@@ -26,6 +26,21 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    intTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/intTest/java')
+        }
+    }
+}
+
+configurations {
+    intTestCompile.extendsFrom testCompile
+    intTestRuntime.extendsFrom testRuntime
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -42,10 +57,20 @@ dependencies {
     testCompile("org.easymock:easymock:3.3.1")
     testCompile("org.powermock:powermock-module-junit4:1.6.2")
     testCompile("org.powermock:powermock-api-easymock:1.6.2")
+    intTestCompile("com.jayway.restassured:spring-mock-mvc:2.5.0")
 }
 
 checkstyle {
    configFile = new File(rootDir, "config/checkstyle.xml")
+}
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
+
+task intTest(type: Test) {
+    testClassesDir = sourceSets.intTest.output.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
 }
 
 task wrapper(type: Wrapper) {
@@ -63,3 +88,6 @@ task buildDocker(type: Docker, dependsOn: build) {
     }
   }
 }
+
+check.dependsOn intTest
+intTest.mustRunAfter test

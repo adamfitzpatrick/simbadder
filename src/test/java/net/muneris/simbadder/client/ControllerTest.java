@@ -15,9 +15,8 @@ import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
+import net.muneris.simbadder.model.SimbadResponseWrapper;
 import net.muneris.simbadder.simbadapi.Simbad;
-
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,7 +59,7 @@ public class ControllerTest {
     @Test
     public void testGetAroundId() {
         expectList();
-        ResponseEntity<List<SimbadObject>> actual =
+        ResponseEntity<SimbadResponseWrapper> actual =
                 controller.getAroundId(NAME, DOUBLE_STRING, "d");
         verifyList(actual);
     }
@@ -84,7 +83,7 @@ public class ControllerTest {
     @Test
     public void testGetAroundIdNullUnit() {
         expectList();
-        ResponseEntity<List<SimbadObject>> actual =
+        ResponseEntity<SimbadResponseWrapper> actual =
                 controller.getAroundId(NAME, DOUBLE_STRING, null);
         verifyList(actual);
     }
@@ -92,7 +91,7 @@ public class ControllerTest {
     @Test
     public void testGetForCustomQuery() {
         expectList();
-        ResponseEntity<List<SimbadObject>> actual = controller.getForCustomQuery(NAME);
+        ResponseEntity<SimbadResponseWrapper> actual = controller.getForCustomQuery(NAME);
         verifyList(actual);
     }
 
@@ -107,37 +106,40 @@ public class ControllerTest {
     public void testGetForIdListQuery() {
         expectList();
         String[] query = { "asdf", "qwer" };
-        ResponseEntity<List<SimbadObject>> actual = controller.getForIdListQuery(query);
+        ResponseEntity<SimbadResponseWrapper> actual = controller.getForIdListQuery(query);
         verifyList(actual);
     }
 
     private void expectList() {
-        expect(ResponseAssembler.assembleList(isA(Simbad.class))).andReturn(SIMBAD_OBJECTS);
-        expect(HypertextStateProvider.addListSelfRel(anyObject())).andReturn(SIMBAD_OBJECTS);
+        expect(ResponseAssembler.assembleObjectList(isA(Simbad.class))).andReturn(
+                new SimbadResponseWrapper(SIMBAD_OBJECTS));
+        expect(HypertextStateProvider.addObjectSelfRelForList(anyObject())).andReturn(
+                SIMBAD_OBJECTS);
         replayAll();
     }
 
     private void expectSingles() {
-        expect(ResponseAssembler.assembleSingle(isA(Simbad.class)))
-                .andReturn(SIMBAD_OBJECTS.get(0));
-        expect(HypertextStateProvider.addSingleSelfRel(isA(SimbadObject.class))).andReturn(
+        expect(ResponseAssembler.assembleSingleObject(isA(Simbad.class))).andReturn(
+                SIMBAD_OBJECTS.get(0));
+        expect(HypertextStateProvider.addObjectSelfRel(isA(SimbadObject.class))).andReturn(
                 SIMBAD_OBJECTS.get(0));
         replayAll();
     }
 
-    private void verifyList(ResponseEntity<List<SimbadObject>> actual) {
+    private void verifyList(ResponseEntity<SimbadResponseWrapper> actual) {
         assertNotNull(actual.getBody());
-        assertEquals(2, actual.getBody().size());
-        assertEquals(SIMBAD_OBJECTS.get(0).getDistance(), actual.getBody().get(0).getDistance(),
-                1e-10);
-        assertEquals(SIMBAD_OBJECTS.get(1).getDistance(), actual.getBody().get(1).getDistance(),
-                1e-10);
+        assertEquals(2, actual.getBody().objects.size());
+        assertEquals(SIMBAD_OBJECTS.get(0).getDistance(), actual.getBody().objects.get(0)
+                .getDistance(), 1e-10);
+        assertEquals(SIMBAD_OBJECTS.get(1).getDistance(), actual.getBody().objects.get(1)
+                .getDistance(), 1e-10);
         verifyAll();
     }
 
     private void verifySingle(ResponseEntity<SimbadObject> actual) {
         assertNotNull(actual.getBody());
-        assertEquals(SIMBAD_OBJECTS.get(0).getDistance(), actual.getBody().getDistance(), 1e-10);
+        assertEquals(SIMBAD_OBJECTS.get(0).getDistance(), actual.getBody().getDistance(),
+                1e-10);
         verifyAll();
     }
 }

@@ -42,7 +42,8 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
-        objectMapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
+        objectMapper
+                .configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
     }
 
     /**
@@ -110,7 +111,8 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
             HttpInputMessage inputMessage) {
         String message = "";
         try {
-            message = StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
+            message =
+                    StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new InputMessageNotReadableException(e);
         }

@@ -96,7 +96,7 @@ public class Format {
     public String getFormatString() {
         String format =
                 fields.entrySet().stream().map(fieldEntry -> fieldEntry.getValue())
-                        .collect(Collectors.joining(", "));
+                .collect(Collectors.joining(", "));
         return String.format(FORMAT_PREFIX, formatName) + format + FORMAT_SUFFIX;
     }
 

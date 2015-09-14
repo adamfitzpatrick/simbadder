@@ -32,7 +32,8 @@ public class SimbadExceptionResponseHandlerTest {
         exception.expect(SimbadFormattingException.class);
         String message = SimbadException.FORMATTING_EXCEPTION + ": bad field";
         exception.expectMessage(message);
-        throw new SimbadExceptionResponseHandler(new JsonMappingException(SIMBAD_FORMATTING_ERROR));
+        throw new SimbadExceptionResponseHandler(new JsonMappingException(
+                SIMBAD_FORMATTING_ERROR));
     }
 
     @Test
