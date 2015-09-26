@@ -1,5 +1,5 @@
 /**
  * @author Adam Fitzpatrick (adam@muneris.net)
  */
-package net.muneris.simbadder.client;
+package net.muneris.simbadder.api;
 

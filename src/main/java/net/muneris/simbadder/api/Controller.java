@@ -1,7 +1,4 @@
-package net.muneris.simbadder.client;
-
-import static net.muneris.simbadder.client.HypertextStateProvider.addObjectSelfRel;
-import static net.muneris.simbadder.client.HypertextStateProvider.addObjectSelfRelForList;
+package net.muneris.simbadder.api;
 
 import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
@@ -10,10 +7,14 @@ import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
 import net.muneris.simbadder.simbadapi.query.CustomQuery;
 import net.muneris.simbadder.simbadapi.query.IdQuery;
+import net.muneris.simbadder.simbadapi.query.Query;
 import net.muneris.simbadder.simbadapi.query.RadiusUnit;
 
 import java.util.Arrays;
+import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class Controller {
-
+    
+    private static final Logger LOGGER = Logger.getLogger(Controller.class);
+    
+    @Autowired
+    private Simbad simbad;
+    
+    @Autowired
+    private HypertextStateProvider stateProvider;
+    
     /**
      * Query around a single identifier, using a radius value and specifying
      * units of degrees, minutes or seconds.
@@ -68,8 +77,10 @@ public class Controller {
 
         IdQuery query = new IdQuery(id, radius, unit);
         SimbadResponseWrapper wrapper =
-                ResponseAssembler.assembleObjectList(new Simbad(query, Format.all()));
-        wrapper.objects = addObjectSelfRelForList(wrapper.objects);
+                assembleObjectList(query, Format.all());
+        if (wrapper.objects != null) {
+            wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
+        }
         return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
     }
 
@@ -85,9 +96,10 @@ public class Controller {
             value = "queryString") String queryString) {
         CustomQuery query = new CustomQuery(queryString);
         SimbadResponseWrapper wrapper =
-                ResponseAssembler
-                        .assembleObjectList(new Simbad(query, Format.allNonDistance()));
-        wrapper.objects = addObjectSelfRelForList(wrapper.objects);
+                assembleObjectList(query, Format.allNonDistance());
+        if (wrapper.objects != null) {
+            wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
+        }
         return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
     }
 
@@ -102,9 +114,10 @@ public class Controller {
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
     public ResponseEntity<SimbadObject> getForId(@PathVariable(value = "id") String id) {
         IdQuery query = new IdQuery(id);
-        SimbadObject object =
-                addObjectSelfRel(ResponseAssembler.assembleSingleObject(new Simbad(query,
-                        Format.allNonDistance())));
+        SimbadObject object = assembleSingleObject(query, Format.allNonDistance());
+        if (object != null) {
+            object = stateProvider.addObjectSelfRel(object);
+        }
         return new ResponseEntity<SimbadObject>(object, HttpStatus.OK);
     }
 
@@ -119,11 +132,42 @@ public class Controller {
     public ResponseEntity<SimbadResponseWrapper> getForIdListQuery(@RequestParam(value = "in",
     required = true) String[] idListString) {
         IdQuery query = new IdQuery(Arrays.asList(idListString));
-
-        SimbadResponseWrapper wrapper =
-                ResponseAssembler
-                        .assembleObjectList(new Simbad(query, Format.allNonDistance()));
-        wrapper.objects = addObjectSelfRelForList(wrapper.objects);
+        SimbadResponseWrapper wrapper = assembleObjectList(query, Format.allNonDistance());
+        if (wrapper.objects != null) {
+            wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
+        }
         return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
+    }
+    
+    /**
+     * Simply calls the simbad.execute() method to obtain a list of objects and
+     * wraps them appropriately to incorporate link references.
+     *
+     * @param simbad
+     * @return
+     */
+    public SimbadResponseWrapper assembleObjectList(Query query, Format format) {
+        List<SimbadObject> objects = simbad.execute(query, format);
+        return new SimbadResponseWrapper(objects);
+    }
+
+    /**
+     * From a properly configured Simbad object, extracts the first object from
+     * a list of SIMBAD objects. If the list contains more than one object, this
+     * method logs a warning message.
+     *
+     * @param simbad
+     * @return a single astronomical object
+     */
+    public SimbadObject assembleSingleObject(Query query, Format format) {
+        List<SimbadObject> objects = simbad.execute(query, format);
+        if (objects == null) {
+            return null;
+        }
+        if (objects.size() > 1) {
+            LOGGER.warn(String.format(
+                    "Expected a single object response, but got %s objects.", objects.size()));
+        }
+        return objects.get(0);
     }
 }

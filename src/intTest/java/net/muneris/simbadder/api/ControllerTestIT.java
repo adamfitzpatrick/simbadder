@@ -1,12 +1,12 @@
-package net.muneris.simbadder.client;
+package net.muneris.simbadder.api;
 
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
-import com.jayway.restassured.RestAssured;
+import net.muneris.simbadder.SpringAwareContextIT;
+
 import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
 import com.jayway.restassured.path.json.JsonPath;
 
 import org.junit.After;
@@ -17,15 +17,13 @@ import org.junit.Test;
  * @author Adam Fitzpatrick (adam@muneris.net)
  */
 
-public class ControllerTestIT {
+public class ControllerTestIT extends SpringAwareContextIT {
 
     public final String hd1Id = "HD      1";
     public final String hd2Id = "HD      2";
 
     @Before
     public void setUp() throws Exception {
-        RestAssured.port = 7901;
-        RestAssuredMockMvc.standaloneSetup(new Controller());
     }
 
     @After
@@ -70,5 +68,4 @@ public class ControllerTestIT {
             assertEquals(hd2Id, json.get("objects[0].mainId"));
         }
     }
-
 }

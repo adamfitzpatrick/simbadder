@@ -56,8 +56,10 @@ public class LoggingFilterTest {
         assertThat(appender.getEventsList().get(1).getLevel(), is(Level.INFO));
         
         List<String> messages = appender.getMessages();
-        assertThat(messages.get(0), matches("^Received request for resource test string$"));
-        assertThat(messages.get(1), matches("^Completed request for resource test string with 200 \\(OK\\)"));
+        assertThat(messages.get(0), matches("^Received request for resource "
+                + "test string$"));
+        assertThat(messages.get(1), matches("^Completed request for resource "
+                + "test string with 200 \\(OK\\)"));
     }
 
 }

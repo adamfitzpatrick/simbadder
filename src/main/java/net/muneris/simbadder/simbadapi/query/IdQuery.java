@@ -15,12 +15,6 @@ import java.util.stream.Collectors;
  *              ...
  * </pre>
  *
- * For wildcard queries, the query string is:
- *
- * <pre>
- *     query id wildcard {identifier}
- * </pre>
- *
  * For queries around an identifier:
  *
  * <pre>

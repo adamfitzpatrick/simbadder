@@ -1,4 +1,4 @@
-package net.muneris.simbadder.client;
+package net.muneris.simbadder.api;
 
 import static net.muneris.simbadder.testutils.TestConstants.DOUBLE_STRING;
 import static net.muneris.simbadder.testutils.TestConstants.NAME;
@@ -7,44 +7,49 @@ import static net.muneris.simbadder.testutils.TestConstants.STRING;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.easymock.PowerMock.mockStatic;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.model.SimbadResponseWrapper;
 import net.muneris.simbadder.simbadapi.Simbad;
+import net.muneris.simbadder.simbadapi.formatting.Format;
 
+import org.easymock.EasyMockRunner;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.ResponseEntity;
 
 /**
  * @author Adam Fitzpatrick (adam@muneris.net)
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ ResponseAssembler.class, HypertextStateProvider.class })
-public class ControllerTest {
+@RunWith(EasyMockRunner.class)
+public class ControllerTest extends EasyMockSupport {
 
     @Rule
-    ExpectedException exception = ExpectedException.none();
+    public final ExpectedException exception = ExpectedException.none();
 
-    Controller controller;
+    @TestSubject
+    private Controller controller = new Controller();
+    
+    @Mock
+    private Simbad simbad;
+    
+    @Mock
+    private HypertextStateProvider stateProvider;
 
     @Before
     public void setUp() throws Exception {
-        mockStatic(ResponseAssembler.class);
-        mockStatic(HypertextStateProvider.class);
-        controller = new Controller();
     }
 
     @After
@@ -111,19 +116,19 @@ public class ControllerTest {
     }
 
     private void expectList() {
-        expect(ResponseAssembler.assembleObjectList(isA(Simbad.class))).andReturn(
-                new SimbadResponseWrapper(SIMBAD_OBJECTS));
-        expect(HypertextStateProvider.addObjectSelfRelForList(anyObject())).andReturn(
+        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(SIMBAD_OBJECTS);
+        expect(stateProvider.addObjectSelfRelForList(anyObject())).andReturn(
                 SIMBAD_OBJECTS);
-        replayAll();
+        replay(simbad);
+        replay(stateProvider);
     }
 
     private void expectSingles() {
-        expect(ResponseAssembler.assembleSingleObject(isA(Simbad.class))).andReturn(
+        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(SIMBAD_OBJECTS);
+        expect(stateProvider.addObjectSelfRel(isA(SimbadObject.class))).andReturn(
                 SIMBAD_OBJECTS.get(0));
-        expect(HypertextStateProvider.addObjectSelfRel(isA(SimbadObject.class))).andReturn(
-                SIMBAD_OBJECTS.get(0));
-        replayAll();
+        replay(simbad);
+        replay(stateProvider);
     }
 
     private void verifyList(ResponseEntity<SimbadResponseWrapper> actual) {
@@ -133,13 +138,15 @@ public class ControllerTest {
                 .getDistance(), 1e-10);
         assertEquals(SIMBAD_OBJECTS.get(1).getDistance(), actual.getBody().objects.get(1)
                 .getDistance(), 1e-10);
-        verifyAll();
+        verify(simbad);
+        verify(stateProvider);
     }
 
     private void verifySingle(ResponseEntity<SimbadObject> actual) {
         assertNotNull(actual.getBody());
         assertEquals(SIMBAD_OBJECTS.get(0).getDistance(), actual.getBody().getDistance(),
                 1e-10);
-        verifyAll();
+        verify(simbad);
+        verify(stateProvider);
     }
 }

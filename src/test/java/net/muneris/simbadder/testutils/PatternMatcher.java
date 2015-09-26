@@ -21,7 +21,7 @@ public class PatternMatcher extends TypeSafeMatcher<String> {
     
     @Override
     public void describeTo(Description description) {
-        // Not Implemented
+        description.appendText("Match to regular expression ").appendValue(pattern);
     }
 
     @Override

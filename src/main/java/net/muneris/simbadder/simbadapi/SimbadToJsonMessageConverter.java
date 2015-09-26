@@ -1,13 +1,10 @@
 package net.muneris.simbadder.simbadapi;
 
-import net.muneris.simbadder.exception.InputMessageNotReadableException;
-import net.muneris.simbadder.exception.SimbadExceptionResponseHandler;
 import net.muneris.simbadder.model.SimbadObject;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +15,7 @@ import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
 /**
@@ -30,6 +28,7 @@ import org.springframework.util.StreamUtils;
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */
+@Service
 public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<SimbadObject[]> {
 
     public static final Logger LOGGER = Logger.getLogger(SimbadToJsonMessageConverter.class);
@@ -108,24 +107,12 @@ public class SimbadToJsonMessageConverter extends AbstractHttpMessageConverter<S
 
     @Override
     protected SimbadObject[] readInternal(Class<? extends SimbadObject[]> clazz,
-            HttpInputMessage inputMessage) {
+            HttpInputMessage inputMessage)
+                    throws IOException, JsonMappingException {
         String message = "";
-        try {
-            message =
-                    StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
-        } catch (IOException e) {
-            throw new InputMessageNotReadableException(e);
-        }
+        message = StreamUtils.copyToString(inputMessage.getBody(), Charset.forName("UTF-8"));
         String jsonMessage = transformResponse(message);
-        try {
-            return objectMapper.readValue(jsonMessage, clazz);
-        } catch (JsonParseException e) {
-            throw new SimbadExceptionResponseHandler(e);
-        } catch (JsonMappingException e) {
-            throw new SimbadExceptionResponseHandler(e);
-        } catch (IOException e) {
-            throw new InputMessageNotReadableException(e);
-        }
+        return objectMapper.readValue(jsonMessage, clazz);
     }
 
     @Override
