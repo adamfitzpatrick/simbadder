@@ -8,7 +8,11 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -45,7 +49,7 @@ import org.springframework.web.util.UriTemplate;
  * @see net.muneris.simbadder.simbadapi.queries.Query
  *
  */
-
+@Service
 public class Simbad {
     /* TODO Implement Query class(es) */
 
@@ -58,30 +62,16 @@ public class Simbad {
     private static final String QUERYURL =
             "http://simbad.u-strasbg.fr/simbad/sim-script?script=output"
                     + " console=off script=off\n{format}\n{query}";
-    /**
-     * Determines the formatting specifier that will be provided to SIMBAD. The
-     * formatting specifier dictates exactly what information is returned by
-     * simbad and how it is presented.
-     *
-     * @see net.muneris.simbadder.simbadapi.formatting
-     */
-    private Format format;
-    /** The actual query submitted to SIMBAD. */
-    private Query query;
-    /** Spring class for consuming REST services. */
+   
+    @Autowired
     private RestTemplate restTemplate;
-
-    /* TODO JavaDoc */
-    public Simbad() {
-        restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new SimbadToJsonMessageConverter());
-    }
-
-    /* TODO JavaDoc */
-    public Simbad(Query query, Format format) {
-        this();
-        this.setQuery(query);
-        this.setFormat(format);
+    
+    @Autowired
+    private SimbadToJsonMessageConverter converter;
+    
+    @PostConstruct
+    public void setup() {
+        restTemplate.getMessageConverters().add(converter);
     }
 
     /**
@@ -90,55 +80,16 @@ public class Simbad {
      *
      * @return response from the SIMBAD server as a list of JSON object.
      */
-    public List<SimbadObject> execute() {
-        if (verify()) {
-            URI uri =
-                    new UriTemplate(QUERYURL).expand(format.getFormatString(),
+    public List<SimbadObject> execute(Query query, Format format) {
+        URI uri = new UriTemplate(QUERYURL).expand(format.getFormatString(),
                             query.getQueryString());
-            LOGGER.info(String.format("SIMBAD Request: %s", uri));
-            SimbadObject[] objects =
-                    restTemplate.getForObject(QUERYURL, SimbadObject[].class,
-                            format.getFormatString(), query.getQueryString());
-            return Arrays.asList(objects);
+        LOGGER.info(String.format("SIMBAD Request: %s", uri));
+        SimbadObject[] objects =
+                restTemplate.getForObject(QUERYURL, SimbadObject[].class,
+                        format.getFormatString(), query.getQueryString());
+        if (objects == null) {
+            return null;
         }
-        return null;
-    }
-
-    /** Retrieves the format object for this instance. */
-    public Format getFormat() {
-        return format;
-    }
-
-    /** Retrieves the query object for this instance. */
-    public Query getQuery() {
-        return query;
-    }
-
-    /** Sets the format object for this instance. */
-    public void setFormat(Format format) {
-        this.format = format;
-    }
-
-    /** Sets the query object for this instance. */
-    public void setQuery(Query query) {
-        this.query = query;
-    }
-
-    /**
-     * Verifies that all components required for a well-formatted request to
-     * SIMBAD are available.
-     *
-     * @return boolean indicating that the request is ready
-     */
-    private boolean verify() {
-        if (query == null) {
-            LOGGER.error("Missing query.");
-            return false;
-        }
-        if (format == null) {
-            LOGGER.error("Missing format.");
-            return false;
-        }
-        return true;
+        return Arrays.asList(objects);
     }
 }

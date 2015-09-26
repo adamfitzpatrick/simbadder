@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.simbadapi.formatting.Format;
@@ -36,23 +35,21 @@ public class SimbadTest {
     private Format format = new Format(NAME);
     private CustomQuery query = new CustomQuery("query coo 0 0 radius=10m");
     private RestTemplate restTemplate;
-    private SimbadToJsonMessageConverter converter = new SimbadToJsonMessageConverter();
+    private SimbadToJsonMessageConverter converter;
 
     @Before
     public void setUp() throws Exception {
-
-        SimbadObject[] objects =
-                converter.read(SimbadObject[].class, new MockHttpInputMessage(
+        converter = new SimbadToJsonMessageConverter();
+        SimbadObject[] objects = converter.read(SimbadObject[].class, new MockHttpInputMessage(
                         SIMBAD_RESPONSE_STRING.getBytes()));
-
         format.addField(FormatField.MAINOTYPE);
-        simbad = new Simbad(query, format);
+        simbad = new Simbad();
         restTemplate = createMock(RestTemplate.class);
         ReflectionTestUtils.setField(simbad, "restTemplate", restTemplate);
 
-        expect(
-                restTemplate.getForObject(QUERY_URL, SimbadObject[].class,
-                        format.getFormatString(), query.getQueryString())).andReturn(objects);
+        expect(restTemplate.getForObject(QUERY_URL, SimbadObject[].class,
+            format.getFormatString(), query.getQueryString()))
+            .andReturn(objects);
         replay(restTemplate);
     }
 
@@ -61,32 +58,16 @@ public class SimbadTest {
     }
 
     @Test
+    public void testSimbad() {
+        assertNotNull(simbad);
+    }
+
+    @Test
     public void testExecute() {
-        Simbad simbadNull = new Simbad();
-        assertNull(simbadNull.execute());
-        simbadNull.setQuery(query);
-        assertNull(simbadNull.execute());
-        List<SimbadObject> objects = simbad.execute();
+        List<SimbadObject> objects = simbad.execute(query, format);
         assertEquals(1, objects.size());
         assertEquals(0.0, objects.get(0).getDistance(), 0e-6);
         assertEquals(3, objects.get(0).getOTypeList().size());
         assertEquals("Possible Quasar", objects.get(0).getOTypeList().get(0).getVerbose());
-    }
-
-    @Test
-    public void testSetGetFormat() {
-        simbad.setFormat(format);
-        assertEquals(simbad.getFormat().getFormatString(), format.getFormatString());
-    }
-
-    @Test
-    public void testSetGetQuery() {
-        simbad.setQuery(query);
-        assertEquals(query, simbad.getQuery());
-    }
-
-    @Test
-    public void testSimbad() {
-        assertNotNull(simbad);
     }
 }

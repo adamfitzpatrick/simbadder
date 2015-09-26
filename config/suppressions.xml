@@ -6,6 +6,10 @@
 <suppressions>
 	<suppress checks="JavadocPackage"
 			  files="src/test/java"/>
-  <suppress checks="JavadocPackage"
+    <suppress checks="JavadocPackage"
+			  files="src/intTest/java"/>
+    <suppress checks="JavadocType"
+			  files="src/test/java"/>
+    <suppress checks="JavadocType"
 			  files="src/intTest/java"/>
 </suppressions>
