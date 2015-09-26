@@ -16,6 +16,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: 'docker'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 jar {
     baseName = 'simbadder'
@@ -64,8 +65,25 @@ checkstyle {
    configFile = new File(rootDir, "config/checkstyle.xml")
 }
 
+jacoco {
+    toolVersion = "0.7.1.201405082137"
+    reportsDir = file("$buildDir/reportscoverage")
+}
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage/"
+    }
+}
+
 tasks.withType(Test) {
     reports.html.destination = file("${reporting.baseDir}/${name}")
+    jacoco {
+        append = false
+        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+        classDumpFile = file("$buildDir/jacoco/classpathdumps")
+    }
 }
 
 task intTest(type: Test) {
@@ -89,5 +107,6 @@ task buildDocker(type: Docker, dependsOn: build) {
   }
 }
 
+build.dependsOn jacocoTestReport
 check.dependsOn intTest
 intTest.mustRunAfter test
