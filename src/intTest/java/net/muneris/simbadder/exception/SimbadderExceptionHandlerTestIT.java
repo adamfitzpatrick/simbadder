@@ -68,9 +68,18 @@ public class SimbadderExceptionHandlerTestIT
     }
     
     @Test
-    public void testIdQueryException() {
+    public void testIdQueryExceptionBadRadius() {
         when().get("id/hd1/around?radius=X&unit=d").then()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("source", is("IdQuery"));
+            .body("source", is("IdQuery"))
+            .and().body("message", is("Badly formatted radius value: X"));
+    }
+    
+    @Test
+    public void testIdQueryExceptionBadUnit() {
+        when().get("id/hd1/around?radius=1&unit=Q").then()
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+            .body("source", is("IdQuery"))
+            .and().body("message", is("Unable to parse radius unit: Q"));
     }
 }
