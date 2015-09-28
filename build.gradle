@@ -73,13 +73,9 @@ checkstyle {
 jacocoCoverage {
 	fileThreshold 0.8
 	
-	fileThreshold 0.0, "Application.java"				// Not unit testable
-	fileThreshold 0.0, "WebAppInitializer.java"			// Not unit testable
-	fileThreshold 0.0, "Configurator.java"				// Not unit testable
-	fileThreshold 0.0, "HypertextStateProvider.java"	// Not unit testable
-
-	// filter
-	fileThreshold 0.6, "LoggingFilter.java"
+	fileThreshold 0.0, "Application.java"				// Not unit testable (main method)
+	fileThreshold 0.0, "WebAppInitializer.java"			// Not unit testable (Spring components)
+	fileThreshold 0.0, "HypertextStateProvider.java"	// Not unit testable (static methods)
 	
 	// model
 	fileThreshold 0.0, "Flux.java"

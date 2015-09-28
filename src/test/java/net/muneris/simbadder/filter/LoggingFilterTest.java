@@ -2,6 +2,8 @@ package net.muneris.simbadder.filter;
 
 import static net.muneris.simbadder.testutils.PatternMatcher.matches;
 import static net.muneris.simbadder.testutils.TestConstants.STRING;
+import static net.muneris.simbadder.testutils.TestConstants.STRING2;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +40,7 @@ public class LoggingFilterTest {
         Logger.getRootLogger().addAppender(appender);
         request = new MockHttpServletRequest();
         request.setRequestURI(STRING);
+        request.setQueryString(STRING2);
         response = new MockHttpServletResponse();
         response.setStatus(HttpStatus.OK.value());
         chain = new MockFilterChain();
@@ -57,9 +60,37 @@ public class LoggingFilterTest {
         
         List<String> messages = appender.getMessages();
         assertThat(messages.get(0), matches("^Received request for resource "
-                + "test string$"));
+                + "test string\\?another test string"));
         assertThat(messages.get(1), matches("^Completed request for resource "
-                + "test string with 200 \\(OK\\)"));
+                + "test string\\?another test string with 200 \\(OK\\)"));
+    }
+    
+    @Test
+    public void testDoFilterMissingQueryString() throws IOException, ServletException {
+        request.setQueryString(null);
+        filter.doFilter(request,  response, chain);
+        assertNotNull(appender.getEventsList());
+        List<String> messages = appender.getMessages();
+        assertThat(messages.get(0), matches("^Received request for resource "
+                + "test string$"));
+    }
+    
+    @Test
+    public void testDestroy() {
+        filter.destroy();
+        assertThat(appender.getEventsList().size(), is(1));
+        assertThat(appender.getEventsList().get(0).getLevel(), is(Level.INFO));
+        String message = appender.getEventsList().get(0).getMessage().toString();
+        assertThat(message, matches("^Removing loggingFilter"));
+    }
+    
+    @Test
+    public void testInit() throws ServletException {
+        filter.init(null);
+        assertThat(appender.getEventsList().size(), is(1));
+        assertThat(appender.getEventsList().get(0).getLevel(), is(Level.INFO));
+        String message = appender.getEventsList().get(0).getMessage().toString();
+        assertThat(message, matches("^Initializing loggingFilter"));
     }
 
 }

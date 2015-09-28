@@ -34,7 +34,7 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void destroy() {
-        // Not implemented
+        LOGGER.info("Removing loggingFilter from application context...");
     }
 
     @Override
@@ -47,6 +47,7 @@ public class LoggingFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        LOGGER.info("Initializing loggingFilter...");
     }
 
     private String getLogString(String requestUri, Integer statusCode) {
