@@ -78,7 +78,6 @@ jacocoCoverage {
 	fileThreshold 0.0, "HypertextStateProvider.java"	// Not unit testable (static methods)
 	
 	// model
-	fileThreshold 0.0, "Flux.java"
 	fileThreshold 0.0, "Identifier.java"
 	fileThreshold 0.0, "Parallax.java"
 	fileThreshold 0.0, "ProperMotion.java"
