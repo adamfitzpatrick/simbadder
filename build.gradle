@@ -1,10 +1,14 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+        	url('https://plugins.gradle.org/m2/')
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
         classpath('se.transmode.gradle:gradle-docker:1.2')
+        classpath('gradle.plugin.com.palantir:jacoco-coverage:0.3.0-dirty')
     }
 }
 
@@ -17,6 +21,7 @@ apply plugin: 'spring-boot'
 apply plugin: 'docker'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: 'com.palantir.jacoco-coverage'
 
 jar {
     baseName = 'simbadder'
@@ -65,25 +70,33 @@ checkstyle {
    configFile = new File(rootDir, "config/checkstyle.xml")
 }
 
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-    reportsDir = file("$buildDir/reportscoverage")
-}
-jacocoTestReport {
-    reports {
-        xml.enabled false
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage/"
-    }
-}
+jacocoCoverage {
+	fileThreshold 0.8
+	
+	fileThreshold 0.0, "Application.java"				// Not unit testable
+	fileThreshold 0.0, "WebAppInitializer.java"			// Not unit testable
+	fileThreshold 0.0, "Configurator.java"				// Not unit testable
+	fileThreshold 0.0, "HypertextStateProvider.java"	// Not unit testable
 
-tasks.withType(Test) {
-    reports.html.destination = file("${reporting.baseDir}/${name}")
-    jacoco {
-        append = false
-        destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
-        classDumpFile = file("$buildDir/jacoco/classpathdumps")
-    }
+	// filter
+	fileThreshold 0.6, "LoggingFilter.java"
+	
+	// model
+	fileThreshold 0.0, "Flux.java"
+	fileThreshold 0.0, "Identifier.java"
+	fileThreshold 0.0, "Parallax.java"
+	fileThreshold 0.0, "ProperMotion.java"
+	fileThreshold 0.0, "RadialVelocity.java"
+	fileThreshold 0.1, "SimbadObject.java"
+	fileThreshold 0.0, "Type.java"
+	
+	// simbadapi
+	fileThreshold 0.5, "Simbad.java"
+	fileThreshold 0.0, "SimbadToJsonMessageConverter.java"
+	
+	// simbadapi.query
+	fileThreshold 0.5, "IdQuery.java"
+	fileThreshold 0.5, "RadiusUnit.java"
 }
 
 task intTest(type: Test) {
@@ -107,6 +120,5 @@ task buildDocker(type: Docker, dependsOn: build) {
   }
 }
 
-build.dependsOn jacocoTestReport
 check.dependsOn intTest
 intTest.mustRunAfter test

@@ -61,9 +61,7 @@ public class Format {
      *            a pre-configured formatting string
      */
     public void addField(FormatField field) {
-        if (!fields.containsKey(field.toString())) {
-            fields.put(field.toString(), field.valueOf());
-        }
+        fields.put(field.toString(), field.valueOf());
     }
 
     /**

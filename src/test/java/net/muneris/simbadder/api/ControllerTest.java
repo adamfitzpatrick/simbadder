@@ -4,6 +4,7 @@ import static net.muneris.simbadder.testutils.TestConstants.DOUBLE_STRING;
 import static net.muneris.simbadder.testutils.TestConstants.NAME;
 import static net.muneris.simbadder.testutils.TestConstants.SIMBAD_OBJECTS;
 import static net.muneris.simbadder.testutils.TestConstants.STRING;
+
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
@@ -11,12 +12,16 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import net.muneris.simbadder.exception.IdQueryException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.model.SimbadResponseWrapper;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.easymock.EasyMockRunner;
 import org.easymock.EasyMockSupport;
@@ -92,12 +97,27 @@ public class ControllerTest extends EasyMockSupport {
                 controller.getAroundId(NAME, DOUBLE_STRING, null);
         verifyList(actual);
     }
+    
+    @Test
+    public void testGetAroundIdNullResponse() {
+        expectNull();
+        ResponseEntity<SimbadResponseWrapper> actual =
+                controller.getAroundId(NAME, DOUBLE_STRING, null);
+        assertNull(actual.getBody().objects);
+    }
 
     @Test
     public void testGetForCustomQuery() {
         expectList();
         ResponseEntity<SimbadResponseWrapper> actual = controller.getForCustomQuery(NAME);
         verifyList(actual);
+    }
+    
+    @Test
+    public void testGetForCustomQueryNullResponse() {
+        expectNull();
+        ResponseEntity<SimbadResponseWrapper> actual = controller.getForCustomQuery(NAME);
+        assertNull(actual.getBody().objects);
     }
 
     @Test
@@ -106,6 +126,23 @@ public class ControllerTest extends EasyMockSupport {
         ResponseEntity<SimbadObject> actual = controller.getForId(NAME);
         verifySingle(actual);
     }
+    
+    @Test
+    public void testGetForIdMultiObjectResponse() {
+        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(SIMBAD_OBJECTS);
+        expect(stateProvider.addObjectSelfRel(anyObject())).andReturn(SIMBAD_OBJECTS.get(0));
+        replay(simbad);
+        replay(stateProvider);
+        ResponseEntity<SimbadObject> actual = controller.getForId(NAME);
+        verifySingle(actual);
+    }
+    
+    @Test
+    public void testGetForIdNullResponse() {
+        expectNull();
+        ResponseEntity<SimbadObject> actual = controller.getForId(NAME);
+        assertNull(actual.getBody());
+    }
 
     @Test
     public void testGetForIdListQuery() {
@@ -113,6 +150,14 @@ public class ControllerTest extends EasyMockSupport {
         String[] query = { "asdf", "qwer" };
         ResponseEntity<SimbadResponseWrapper> actual = controller.getForIdListQuery(query);
         verifyList(actual);
+    }
+    
+    @Test
+    public void testGetForIdListQueryNullResponse() {
+        expectNull();
+        String[] query = { "asdf", "qwer" };
+        ResponseEntity<SimbadResponseWrapper> actual = controller.getForIdListQuery(query);
+        assertNull(actual.getBody().objects);
     }
 
     private void expectList() {
@@ -124,11 +169,17 @@ public class ControllerTest extends EasyMockSupport {
     }
 
     private void expectSingles() {
-        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(SIMBAD_OBJECTS);
+        List<SimbadObject> objects = Arrays.asList(SIMBAD_OBJECTS.get(0));
+        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(objects);
         expect(stateProvider.addObjectSelfRel(isA(SimbadObject.class))).andReturn(
                 SIMBAD_OBJECTS.get(0));
         replay(simbad);
         replay(stateProvider);
+    }
+    
+    private void expectNull() {
+        expect(simbad.execute(anyObject(), isA(Format.class))).andReturn(null);
+        replay(simbad);
     }
 
     private void verifyList(ResponseEntity<SimbadResponseWrapper> actual) {
