@@ -1,6 +1,6 @@
 package net.muneris.simbadder.exception;
 
-import static net.muneris.simbadder.testutils.TestConstants.SIMBAD_FORMATTING_ERROR;
+import static net.muneris.simbadder.testutils.TestConstants.*;
 import static net.muneris.simbadder.testutils.TestConstants.SIMBAD_PARSE_ERROR;
 import static net.muneris.simbadder.testutils.TestConstants.SIMBAD_UNEXPECTED_ERROR;
 import static net.muneris.simbadder.testutils.TestConstants.STRING;
@@ -18,6 +18,7 @@ import org.easymock.Mock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -30,17 +31,17 @@ public class SimbadderExceptionHandlerTest {
     private static final String SOURCE = "Relayed from SIMBAD";
     private static final String PARSEERRMESSAGE = "error message: foo";
     private static final String FORMATERRMESSAGE = "bad field";
-    private static final String UNREADABLE = "No message from SIMBAD or message not readable.";
+    private static final String UNREADABLE = "No additional information from SIMBAD.";
     
     private SimbadderExceptionHandler handler;
-    private ExceptionResponse expected;
-    private ExceptionResponse actual;
+    private SimbadderException expected;
+    private SimbadderException actual;
     
     @Mock
     private ResourceAccessException accessException;
     
     @Mock
-    private IdQueryException idQueryException;
+    private SimbadderException simbadderException;
 
     @Before
     public void setUp() throws Exception {
@@ -50,7 +51,7 @@ public class SimbadderExceptionHandlerTest {
     @Test
     public void testResolveExceptionParseException() {
         expected =
-                new ExceptionResponse(ExceptionClass.PARSE_ERROR,
+                new SimbadderException(SimbadExceptionClass.PARSE_ERROR,
                         PARSEERRMESSAGE, SOURCE);
         expect(accessException.getMessage()).andReturn(SIMBAD_PARSE_ERROR).times(2);
         replay(accessException);
@@ -61,7 +62,7 @@ public class SimbadderExceptionHandlerTest {
     @Test
     public void testResolveExceptionFormattingError() {
         expected =
-                new ExceptionResponse(ExceptionClass.FORMATTING_ERROR,
+                new SimbadderException(SimbadExceptionClass.FORMATTING_ERROR,
                         FORMATERRMESSAGE, SOURCE);
         expect(accessException.getMessage()).andReturn(SIMBAD_FORMATTING_ERROR).times(2);
         replay(accessException);
@@ -70,14 +71,14 @@ public class SimbadderExceptionHandlerTest {
     }
 
     private void executeAccessException() {
-        ResponseEntity<ExceptionResponse> response = handler.resolveException(accessException);
+        ResponseEntity<SimbadderException> response = handler.resolveException(accessException);
         assertNotNull(response.getBody());
         actual = response.getBody();
     }
     
     @Test
     public void testResolveExceptionUnspecifiedError() {
-        expected = new ExceptionResponse(ExceptionClass.UNSPECIFIED_ERROR,
+        expected = new SimbadderException(SimbadExceptionClass.UNSPECIFIED_ERROR,
                 UNREADABLE, SOURCE);
         expect(accessException.getMessage()).andReturn(SIMBAD_UNEXPECTED_ERROR).times(2);
         replay(accessException);
@@ -87,7 +88,7 @@ public class SimbadderExceptionHandlerTest {
     
     @Test
     public void testResolveExceptionUnreadableMessage() {
-        expected = new ExceptionResponse(ExceptionClass.FORMATTING_ERROR,
+        expected = new SimbadderException(SimbadExceptionClass.FORMATTING_ERROR,
                 UNREADABLE, SOURCE);
         expect(accessException.getMessage())
             .andReturn(SIMBAD_FORMATTING_ERROR.substring(0, 72)).times(2);
@@ -97,11 +98,10 @@ public class SimbadderExceptionHandlerTest {
     }
     
     @Test
-    public void testResolveIdQueryException() {
-        expected = new ExceptionResponse(ExceptionClass.IDQUERY_EXCEPTION, STRING, "IdQuery");
-        expect(idQueryException.getMessage()).andReturn(STRING);
-        replay(idQueryException);
-        ResponseEntity<ExceptionResponse> response = handler.resolveException(idQueryException);
+    public void testResolveSimbadderException() {
+        expected = new SimbadderException(NAME, STRING, STRING2, HttpStatus.BAD_REQUEST);
+        replay(simbadderException);
+        ResponseEntity<SimbadderException> response = handler.resolveException(expected);
         assertNotNull(response.getBody());
         actual = response.getBody();
         assertThat(actual.getMessage(), is(expected.getMessage()));
@@ -110,7 +110,11 @@ public class SimbadderExceptionHandlerTest {
     }
     
     private void asserter() {
-        assertThat(actual, samePropertyValuesAs(expected));
+        //assertThat(actual, samePropertyValuesAs(expected));
+        assertThat(actual.getReason(), is(expected.getReason()));
+        assertThat(actual.getMessage(), is(expected.getMessage()));
+        assertThat(actual.getStatus(), is(expected.getStatus()));
+        assertThat(actual.getSource(), is(expected.getSource()));
         verify(accessException);
     }
 }

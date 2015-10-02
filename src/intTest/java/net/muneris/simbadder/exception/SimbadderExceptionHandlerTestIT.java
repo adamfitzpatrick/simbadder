@@ -46,7 +46,7 @@ public class SimbadderExceptionHandlerTestIT
             .andRespond(withSuccess(SIMBAD_PARSE_ERROR, MediaType.TEXT_PLAIN));
         when().get("id/id").then()
             .statusCode(HttpStatus.SC_NOT_FOUND)
-            .body("exception", is(ExceptionClass.PARSE_ERROR.toString()));
+            .body("reason", is(SimbadExceptionClass.PARSE_ERROR.toString()));
     }
     
     @Test
@@ -55,7 +55,7 @@ public class SimbadderExceptionHandlerTestIT
             .andRespond(withSuccess(SIMBAD_FORMATTING_ERROR, MediaType.TEXT_PLAIN));
         when().get("id/id").then()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("exception", is(ExceptionClass.FORMATTING_ERROR.toString()));
+            .body("reason", is(SimbadExceptionClass.FORMATTING_ERROR.toString()));
     }
     
     @Test
@@ -64,22 +64,22 @@ public class SimbadderExceptionHandlerTestIT
             .andRespond(withSuccess(SIMBAD_UNEXPECTED_ERROR, MediaType.TEXT_PLAIN));
         when().get("id/id").then()
             .statusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
-            .body("exception", is(ExceptionClass.UNSPECIFIED_ERROR.toString()));
+            .body("reason", is(SimbadExceptionClass.UNSPECIFIED_ERROR.toString()));
     }
     
     @Test
-    public void testIdQueryExceptionBadRadius() {
-        when().get("id/hd1/around?radius=X&unit=d").then()
-            .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("source", is("IdQuery"))
-            .and().body("message", is("Badly formatted radius value: X"));
-    }
-    
-    @Test
-    public void testIdQueryExceptionBadUnit() {
+    public void testUnreadableUnitException() {
         when().get("id/hd1/around?radius=1&unit=Q").then()
             .statusCode(HttpStatus.SC_BAD_REQUEST)
-            .body("source", is("IdQuery"))
+            .body("source", is("Controller.getAroundId"))
             .and().body("message", is("Unable to parse radius unit: Q"));
+    }
+    
+    @Test
+    public void testInvalidCoordinateException() {
+        when().get("id/hd1/around?radius=1000&unit=d").then()
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+            .body("source", is("Controller.getAroundId"))
+            .body("reason", is("Coordinate out of range"));
     }
 }
