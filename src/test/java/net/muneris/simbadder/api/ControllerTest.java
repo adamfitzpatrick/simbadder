@@ -1,6 +1,6 @@
 package net.muneris.simbadder.api;
 
-import static net.muneris.simbadder.testutils.TestConstants.DOUBLE_STRING;
+import static net.muneris.simbadder.testutils.TestConstants.*;
 import static net.muneris.simbadder.testutils.TestConstants.NAME;
 import static net.muneris.simbadder.testutils.TestConstants.SIMBAD_OBJECTS;
 import static net.muneris.simbadder.testutils.TestConstants.STRING;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import net.muneris.simbadder.exception.IdQueryException;
+import net.muneris.simbadder.exception.SimbadderException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.model.SimbadResponseWrapper;
 import net.muneris.simbadder.simbadapi.Simbad;
@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * @author Adam Fitzpatrick (adam@muneris.net)
@@ -53,8 +54,11 @@ public class ControllerTest extends EasyMockSupport {
     @Mock
     private HypertextStateProvider stateProvider;
 
+    private CoordinateValidator validator = new CoordinateValidator();
+    
     @Before
     public void setUp() throws Exception {
+        ReflectionTestUtils.setField(controller, "validator", validator);
     }
 
     @After
@@ -70,31 +74,31 @@ public class ControllerTest extends EasyMockSupport {
     public void testGetAroundId() {
         expectList();
         ResponseEntity<SimbadResponseWrapper> actual =
-                controller.getAroundId(NAME, DOUBLE_STRING, "d");
+                controller.getAroundId(NAME, 1.0, "d");
         verifyList(actual);
     }
-
+    
     @Test
-    public void testGetAroundIdInvalidRadius() {
+    public void testGetAroundIdRadiusOutOfRange() {
         expectList();
-        exception.expect(IdQueryException.class);
-        exception.expectMessage("Badly formatted radius value");
-        controller.getAroundId(NAME, STRING, null);
+        exception.expect(SimbadderException.class);
+        exception.expectMessage("Invalid radius value");
+        controller.getAroundId(NAME, 1000, null);
     }
 
     @Test()
     public void testGetAroundIdInvalidUnit() {
         expectList();
-        exception.expect(IdQueryException.class);
+        exception.expect(SimbadderException.class);
         exception.expectMessage("Unable to parse radius unit");
-        controller.getAroundId(NAME, DOUBLE_STRING, "q");
+        controller.getAroundId(NAME, 1.0, "q");
     }
 
     @Test
     public void testGetAroundIdNullUnit() {
         expectList();
         ResponseEntity<SimbadResponseWrapper> actual =
-                controller.getAroundId(NAME, DOUBLE_STRING, null);
+                controller.getAroundId(NAME, 1.0, null);
         verifyList(actual);
     }
     
@@ -102,7 +106,7 @@ public class ControllerTest extends EasyMockSupport {
     public void testGetAroundIdNullResponse() {
         expectNull();
         ResponseEntity<SimbadResponseWrapper> actual =
-                controller.getAroundId(NAME, DOUBLE_STRING, null);
+                controller.getAroundId(NAME, 1.0, null);
         assertNull(actual.getBody().objects);
     }
 
@@ -157,6 +161,62 @@ public class ControllerTest extends EasyMockSupport {
         expectNull();
         String[] query = { "asdf", "qwer" };
         ResponseEntity<SimbadResponseWrapper> actual = controller.getForIdListQuery(query);
+        assertNull(actual.getBody().objects);
+    }
+    
+    @Test
+    public void testGetForCooQuery() {
+        expectList();
+        ResponseEntity<SimbadResponseWrapper> actual =
+                controller.getForCooQuery(1.0, 1.0, 1.0, "d", STRING, STRING2);
+        verifyList(actual);
+    }
+    
+    @Test
+    public void testGetForCooQueryNullUnit() {
+        expectList();
+        ResponseEntity<SimbadResponseWrapper> actual =
+                controller.getForCooQuery(1.0, 1.0, 1.0, null, STRING, STRING2);
+        verifyList(actual);
+    }
+    
+    @Test
+    public void testGetForCooQueryInvalidUnit() {
+        expectList();
+        exception.expect(SimbadderException.class);
+        exception.expectMessage("Unable to parse radius unit");
+        controller.getForCooQuery(1.0, 1.0, 1.0, "q", STRING, STRING2);
+    }
+    
+    @Test
+    public void testGetForCooQueryInvalidRadius() {
+        expectList();
+        exception.expect(SimbadderException.class);
+        exception.expectMessage("Invalid radius value");
+        controller.getForCooQuery(1.0, 1.0, 1000, "d", STRING, STRING2);
+    }
+    
+    @Test
+    public void testGetForCooQueryInvalidRa() {
+        expectList();
+        exception.expect(SimbadderException.class);
+        exception.expectMessage("Invalid right ascension value");
+        controller.getForCooQuery(1000, 1.0, 1.0, "d", STRING, STRING2);
+    }
+    
+    @Test
+    public void testGetForCooQueryInvalidDec() {
+        expectList();
+        exception.expect(SimbadderException.class);
+        exception.expectMessage("Invalid declination value");
+        controller.getForCooQuery(1.0, 1000, 1.0, "d", STRING, STRING2);
+    }
+    
+    @Test
+    public void testGetForCooQueryNullResponse() {
+        expectNull();
+        ResponseEntity<SimbadResponseWrapper> actual =
+                controller.getForCooQuery(1.0, 1.0, 1.0, "d", STRING, STRING2);
         assertNull(actual.getBody().objects);
     }
 

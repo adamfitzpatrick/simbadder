@@ -1,10 +1,11 @@
 package net.muneris.simbadder.api;
 
-import net.muneris.simbadder.exception.IdQueryException;
+import net.muneris.simbadder.exception.SimbadderException;
 import net.muneris.simbadder.model.SimbadObject;
 import net.muneris.simbadder.model.SimbadResponseWrapper;
 import net.muneris.simbadder.simbadapi.Simbad;
 import net.muneris.simbadder.simbadapi.formatting.Format;
+import net.muneris.simbadder.simbadapi.query.CooQuery;
 import net.muneris.simbadder.simbadapi.query.CustomQuery;
 import net.muneris.simbadder.simbadapi.query.IdQuery;
 import net.muneris.simbadder.simbadapi.query.Query;
@@ -31,22 +32,25 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class Controller {
-    
+
     private static final Logger LOGGER = Logger.getLogger(Controller.class);
-    
+
     @Autowired
     private Simbad simbad;
-    
+
     @Autowired
     private HypertextStateProvider stateProvider;
-    
+
+    @Autowired
+    private CoordinateValidator validator;
+
     /**
      * Query around a single identifier, using a radius value and specifying
      * units of degrees, minutes or seconds.
      *
      * @param id
      *            Single identifier string
-     * @param radiusStr
+     * @param radius
      *            Search radius around id object as double
      * @param unitStr
      *            String specifying radius units as degrees, minutes or seconds.
@@ -54,30 +58,59 @@ public class Controller {
     @RequestMapping(value = "/id/{id}/around", method = RequestMethod.GET)
     public ResponseEntity<SimbadResponseWrapper> getAroundId(
             @PathVariable(value = "id") String id, @RequestParam(value = "radius",
-            required = true) String radiusStr, @RequestParam(value = "unit",
+            required = true) double radius, @RequestParam(value = "unit",
             required = false) String unitStr) {
+        String me = "Controller.getAroundId";
+/*
         double radius;
         try {
             radius = Double.valueOf(radiusStr);
         } catch (NumberFormatException e) {
-            throw new IdQueryException(String.format("Badly formatted radius value: %s",
-                    radiusStr));
-        }
+            throw unreadableRadius(radiusStr, me);
+        }*/
 
         RadiusUnit unit;
         if (unitStr != null) {
             unit = RadiusUnit.parseString(unitStr);
             if (unit == null) {
-                throw new IdQueryException(String.format("Unable to parse radius unit: %s",
-                        unitStr));
+                throw unreadableUnit(unitStr, me);
+            }
+        } else {
+            unit = RadiusUnit.DEGREES;
+        }
+        validateCoordinates(null, null, radius, unit, me);
+
+        IdQuery query = new IdQuery(id, radius, unit);
+        SimbadResponseWrapper wrapper = assembleObjectList(query, Format.all());
+        if (wrapper.objects != null) {
+            wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
+        }
+        return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/coo", method = RequestMethod.GET)
+    public ResponseEntity<SimbadResponseWrapper> getForCooQuery(
+            @RequestParam(value = "ra", required = true) double ra,
+            @RequestParam(value = "dec", required = true) double dec,
+            @RequestParam(value = "radius", required = true) double radius,
+            @RequestParam(value = "unit", required = false) String unitStr,
+            @RequestParam(value = "epoch", required = false) String epoch,
+            @RequestParam(value = "equi", required = false) String equi) {
+        String me = "Controller.getForCooQuery";
+        RadiusUnit unit;
+        if (unitStr != null) {
+            unit = RadiusUnit.parseString(unitStr);
+            if (unit == null) {
+                throw unreadableUnit(unitStr, me);
             }
         } else {
             unit = RadiusUnit.DEGREES;
         }
 
-        IdQuery query = new IdQuery(id, radius, unit);
-        SimbadResponseWrapper wrapper =
-                assembleObjectList(query, Format.all());
+        validateCoordinates(ra, dec, radius, unit, me);
+
+        CooQuery query = new CooQuery(ra, dec, radius, unit, epoch, equi);
+        SimbadResponseWrapper wrapper = assembleObjectList(query, Format.all());
         if (wrapper.objects != null) {
             wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
         }
@@ -95,8 +128,7 @@ public class Controller {
     public ResponseEntity<SimbadResponseWrapper> getForCustomQuery(@PathVariable(
             value = "queryString") String queryString) {
         CustomQuery query = new CustomQuery(queryString);
-        SimbadResponseWrapper wrapper =
-                assembleObjectList(query, Format.allNonDistance());
+        SimbadResponseWrapper wrapper = assembleObjectList(query, Format.allNonDistance());
         if (wrapper.objects != null) {
             wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
         }
@@ -138,7 +170,7 @@ public class Controller {
         }
         return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
     }
-    
+
     /**
      * Simply calls the simbad.execute() method to obtain a list of objects and
      * wraps them appropriately to incorporate link references.
@@ -146,7 +178,7 @@ public class Controller {
      * @param simbad
      * @return
      */
-    public SimbadResponseWrapper assembleObjectList(Query query, Format format) {
+    private SimbadResponseWrapper assembleObjectList(Query query, Format format) {
         List<SimbadObject> objects = simbad.execute(query, format);
         return new SimbadResponseWrapper(objects);
     }
@@ -159,7 +191,7 @@ public class Controller {
      * @param simbad
      * @return a single astronomical object
      */
-    public SimbadObject assembleSingleObject(Query query, Format format) {
+    private SimbadObject assembleSingleObject(Query query, Format format) {
         List<SimbadObject> objects = simbad.execute(query, format);
         if (objects == null) {
             return null;
@@ -169,5 +201,37 @@ public class Controller {
                     "Expected a single object response, but got %s objects.", objects.size()));
         }
         return objects.get(0);
+    }
+
+    private SimbadderException unreadableRadius(String value, String source) {
+        String message = String.format("Badly formatted radius value: %s", value);
+        return new SimbadderException(NumberFormatException.class.getSimpleName(), message,
+                source, HttpStatus.BAD_REQUEST);
+    }
+
+    private SimbadderException unreadableUnit(String value, String source) {
+        String message = String.format("Unable to parse radius unit: %s", value);
+        return new SimbadderException("Convert string to RadiusUnit", message, source,
+                HttpStatus.BAD_REQUEST);
+    }
+
+    private boolean validateCoordinates(Double ra, Double dec, Double radius, RadiusUnit unit,
+            String source) {
+        String message;
+        String reason = "Coordinate out of range";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (ra != null && !validator.validLongitude(ra)) {
+            message = String.format("Invalid right ascension value: %s", ra);
+            throw new SimbadderException(reason, message, source, status);
+        }
+        if (dec != null && !validator.validLatitude(dec)) {
+            message = String.format("Invalid declination value: %s", dec);
+            throw new SimbadderException(reason, message, source, status);
+        }
+        if (radius != null && !validator.validRadius(radius, unit)) {
+            message = String.format("Invalid radius value: %s%s", radius, unit.toString());
+            throw new SimbadderException(reason, message, source, status);
+        }
+        return true;
     }
 }
