@@ -9,7 +9,7 @@
 <module name="Checker">
 
 	<module name="SuppressionFilter">
-		<property name="file" value="${basedir}/config/suppressions.xml"/>
+		<property name="file" value="${suppressionsfile}" />
 	</module>
 	
 	<module name="FileTabCharacter">

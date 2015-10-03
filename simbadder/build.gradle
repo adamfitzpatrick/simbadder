@@ -1,0 +1,47 @@
+jar {
+    baseName = 'simbadder'
+    version =  '0.2.0'
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web") { exclude module: "spring-boot-starter-logging" }
+	compile("org.springframework.boot:spring-boot-starter-log4j")
+    compile("org.springframework:spring-web")
+    compile("com.fasterxml.jackson.core:jackson-databind")
+    compile("org.springframework.hateoas:spring-hateoas")
+    compile("org.springframework:spring-oxm:3.0.4.RELEASE")
+    compile("org.apache.commons:commons-io:1.3.2")
+    compile("org.slf4j:slf4j-api:1.7.12")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("junit:junit")
+    testCompile("org.easymock:easymock:3.4")
+    testCompile("com.jayway.restassured:spring-mock-mvc:2.5.0")
+    testCompile("com.jayway.restassured:rest-assured:2.5.0")
+}
+
+jacocoCoverage {
+	fileThreshold 0.8
+
+	fileThreshold 0.0, "Application.java"				// Not unit testable (main method)
+	fileThreshold 0.0, "WebAppInitializer.java"			// Not unit testable (Spring components)
+	fileThreshold 0.0, "HypertextStateProvider.java"	// Not unit testable (static methods)
+
+	// model
+	fileThreshold 0.0, "Identifier.java"
+	fileThreshold 0.0, "Parallax.java"
+	fileThreshold 0.0, "ProperMotion.java"
+	fileThreshold 0.0, "RadialVelocity.java"
+	fileThreshold 0.1, "SimbadObject.java"
+	fileThreshold 0.0, "Type.java"
+
+	// simbadapi
+	fileThreshold 0.5, "Simbad.java"
+	fileThreshold 0.0, "SimbadToJsonMessageConverter.java"
+
+	// simbadapi.query
+	fileThreshold 0.5, "IdQuery.java"
+	fileThreshold 0.5, "RadiusUnit.java"
+}
+
+check.dependsOn intTest
+intTest.mustRunAfter test
