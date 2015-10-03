@@ -3,6 +3,8 @@ package net.muneris.simbadder.exception;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,38 +27,41 @@ import org.springframework.web.client.ResourceAccessException;
 @ControllerAdvice
 public class SimbadderExceptionHandler {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimbadderExceptionHandler.class);
+    
     private static final String EXCEPTION_PATTERN_STRING =
-            "(?<=(java\\.text\\.))[A-Za-z]{1,50}|incorrect field in format";
+            "(?<=(java\\.text\\.))[A-Za-z]{1,50}|"
+            + "incorrect field in format|"
+            + "No astronomical object found";
     private static final String MESSAGE_PATTERN_STRING = "(?<=(%s: ))[A-Za-z0-9 :]+";
 
     @ExceptionHandler(ResourceAccessException.class)
     @ResponseBody
-    public ResponseEntity<ExceptionResponse> resolveException(ResourceAccessException ex) {
-        ExceptionClass exceptionClass = parseSimbadExceptionClass(ex.getMessage());
+    public ResponseEntity<SimbadderException> resolveException(ResourceAccessException ex) {
+        SimbadExceptionClass exceptionClass = parseSimbadExceptionClass(ex.getMessage());
         String message = parseExceptionMessage(exceptionClass, ex.getMessage());
-        ExceptionResponse response =
-                new ExceptionResponse(exceptionClass, message, "Relayed from SIMBAD");
-        return new ResponseEntity<ExceptionResponse>(response, response.getStatus());
+        LOGGER.error("SIMBAD relayed error ({}): {}", exceptionClass, message);
+        SimbadderException response =
+                new SimbadderException(exceptionClass, message, "Relayed from SIMBAD");
+        return new ResponseEntity<SimbadderException>(response, response.getStatus());
     }
     
-    @ExceptionHandler(IdQueryException.class)
+    @ExceptionHandler(SimbadderException.class)
     @ResponseBody
-    public ResponseEntity<ExceptionResponse> resolveException(IdQueryException ex) {
-        ExceptionResponse response = new ExceptionResponse(ExceptionClass.IDQUERY_EXCEPTION,
-                ex.getMessage(), "IdQuery");
-        return new ResponseEntity<ExceptionResponse>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<SimbadderException> resolveException(SimbadderException ex) {
+        return new ResponseEntity<SimbadderException>(ex, ex.getStatus());
     }
 
-    private ExceptionClass parseSimbadExceptionClass(String message) {
+    private SimbadExceptionClass parseSimbadExceptionClass(String message) {
         Pattern pattern = Pattern.compile(EXCEPTION_PATTERN_STRING);
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
-            return ExceptionClass.factory(matcher.group(0));
+            return SimbadExceptionClass.factory(matcher.group(0));
         }
-        return ExceptionClass.UNSPECIFIED_ERROR;
+        return SimbadExceptionClass.UNSPECIFIED_ERROR;
     }
 
-    private String parseExceptionMessage(ExceptionClass exceptionClass, String message) {
+    private String parseExceptionMessage(SimbadExceptionClass exceptionClass, String message) {
         if (exceptionClass == null) {
             return message;
         }
@@ -66,7 +71,7 @@ public class SimbadderExceptionHandler {
         if (matcher.find()) {
             return matcher.group(0);
         } else {
-            return "No message from SIMBAD or message not readable.";
+            return "No additional information from SIMBAD.";
         }
     }
 }

@@ -8,36 +8,38 @@ import org.springframework.http.HttpStatus;
 
 public class SimbadExceptionClassTest {
 
-    private ExceptionClass exceptionClass;
+    SimbadExceptionClass eClass;
 
     @Test
     public void testFactory() {
-        exceptionClass = ExceptionClass.factory("incorrect field in format");
-        assertThat(exceptionClass, is(ExceptionClass.FORMATTING_ERROR));
-        exceptionClass = ExceptionClass.factory("ParseException");
-        assertThat(exceptionClass, is(ExceptionClass.PARSE_ERROR));
-        exceptionClass = ExceptionClass.factory("foo");
-        assertThat(exceptionClass, is(ExceptionClass.UNSPECIFIED_ERROR));
+        assertThat(SimbadExceptionClass.factory("Incorrect Field In Format"),
+                is(SimbadExceptionClass.FORMATTING_ERROR));
+        assertThat(SimbadExceptionClass.factory("ParseException"),
+                is(SimbadExceptionClass.PARSE_ERROR));
+        assertThat(SimbadExceptionClass.factory("Unspecified Error"),
+                is(SimbadExceptionClass.UNSPECIFIED_ERROR));
+        assertThat(SimbadExceptionClass.factory("foo"),
+                is(SimbadExceptionClass.UNSPECIFIED_ERROR));
     }
 
     @Test
     public void testToString() {
-        exceptionClass = ExceptionClass.FORMATTING_ERROR;
-        assertThat(exceptionClass.toString(), is("Incorrect Field In Format"));
-        exceptionClass = ExceptionClass.PARSE_ERROR;
-        assertThat(exceptionClass.toString(), is("ParseException"));
-        exceptionClass = ExceptionClass.UNSPECIFIED_ERROR;
-        assertThat(exceptionClass.toString(), is("Unspecified Error"));
+        assertThat(SimbadExceptionClass.FORMATTING_ERROR.toString(),
+                is("Incorrect Field In Format"));
+        assertThat(SimbadExceptionClass.PARSE_ERROR.toString(),
+                is("ParseException"));
+        assertThat(SimbadExceptionClass.UNSPECIFIED_ERROR.toString(),
+                is("Unspecified Error"));
     }
 
     @Test
     public void testGetStatus() {
-        exceptionClass = ExceptionClass.FORMATTING_ERROR;
-        assertThat(exceptionClass.getStatus(), is(HttpStatus.BAD_REQUEST));
-        exceptionClass = ExceptionClass.PARSE_ERROR;
-        assertThat(exceptionClass.getStatus(), is(HttpStatus.NOT_FOUND));
-        exceptionClass = ExceptionClass.UNSPECIFIED_ERROR;
-        assertThat(exceptionClass.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+        assertThat(SimbadExceptionClass.FORMATTING_ERROR.getStatus(),
+                is(HttpStatus.BAD_REQUEST));
+        assertThat(SimbadExceptionClass.PARSE_ERROR.getStatus(),
+                is(HttpStatus.NOT_FOUND));
+        assertThat(SimbadExceptionClass.UNSPECIFIED_ERROR.getStatus(),
+                is(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
 }

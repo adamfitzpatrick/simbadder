@@ -14,35 +14,35 @@ import org.springframework.http.HttpStatus;
  * @author Adam Fitzpatrick (adam@muneris.net)
  *
  */
-public enum ExceptionClass {
+public enum SimbadExceptionClass {
     
     PARSE_ERROR("ParseException"),
     FORMATTING_ERROR("Incorrect Field In Format"),
-    IDQUERY_EXCEPTION("IdQueryException"),
+    NO_OBJECTS_ERROR("No astronomical object found"),
     UNSPECIFIED_ERROR("Unspecified Error");
     
     private String errorString;
-    private static final Map<ExceptionClass, HttpStatus> statusCodes = new HashMap<>();
+    private static final Map<SimbadExceptionClass, HttpStatus> statusCodes = new HashMap<>();
     static {
-        statusCodes.put(ExceptionClass.PARSE_ERROR, HttpStatus.NOT_FOUND);
-        statusCodes.put(ExceptionClass.FORMATTING_ERROR, HttpStatus.BAD_REQUEST);
-        statusCodes.put(ExceptionClass.UNSPECIFIED_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-        statusCodes.put(ExceptionClass.IDQUERY_EXCEPTION, HttpStatus.BAD_REQUEST);
+        statusCodes.put(SimbadExceptionClass.PARSE_ERROR, HttpStatus.NOT_FOUND);
+        statusCodes.put(SimbadExceptionClass.FORMATTING_ERROR, HttpStatus.BAD_REQUEST);
+        statusCodes.put(SimbadExceptionClass.UNSPECIFIED_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        statusCodes.put(SimbadExceptionClass.NO_OBJECTS_ERROR, HttpStatus.BAD_REQUEST);
     }
     
-    public static ExceptionClass factory(String errorString) {
+    public static SimbadExceptionClass factory(String errorString) {
         Pattern pattern = Pattern.compile(errorString, Pattern.CASE_INSENSITIVE);
-        List<ExceptionClass> sEClassList = Arrays.asList(ExceptionClass.values());
-        Optional<ExceptionClass> option = sEClassList.stream().filter(sEClass -> {
+        List<SimbadExceptionClass> sEClassList = Arrays.asList(SimbadExceptionClass.values());
+        Optional<SimbadExceptionClass> option = sEClassList.stream().filter(sEClass -> {
             return pattern.matcher(sEClass.toString()).find();
         }).findFirst();
         if (option.isPresent()) {
             return option.get();
         }
-        return ExceptionClass.UNSPECIFIED_ERROR;
+        return SimbadExceptionClass.UNSPECIFIED_ERROR;
     }
     
-    private ExceptionClass(String errorString) {
+    private SimbadExceptionClass(String errorString) {
         this.errorString = errorString;
     }
     
