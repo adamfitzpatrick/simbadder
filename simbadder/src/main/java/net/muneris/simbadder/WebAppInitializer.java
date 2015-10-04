@@ -14,7 +14,7 @@ import org.springframework.web.servlet.DispatcherServlet;
  * @author Adam Fitzpatrick (adam@muneris.net)
  */
 public class WebAppInitializer implements WebApplicationInitializer {
-
+    
     /**
      * Registers the dispatcher servlet, which serves as the foundation element
      * for Spring to determine how to handle incoming requests. TODO Add error

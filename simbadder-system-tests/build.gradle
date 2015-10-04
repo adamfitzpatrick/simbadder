@@ -1,7 +1,8 @@
 dependencies {
 	compile project(":simbadder")
 	
-	
+	compile "org.springframework:spring-test:4.2.1.RELEASE"
+	compile "org.springframework:spring-tx:4.2.1.RELEASE"
     compile "com.jayway.restassured:rest-assured:2.5.0"
     compile "junit:junit:4.12"
 	compile "org.hamcrest:hamcrest-all:1.3"
