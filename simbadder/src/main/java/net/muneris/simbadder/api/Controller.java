@@ -14,6 +14,8 @@ import net.muneris.simbadder.simbadapi.query.RadiusUnit;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
 
     private static final Logger LOGGER = Logger.getLogger(Controller.class);
-
+    private Long startTime;
+    
     @Autowired
     private Simbad simbad;
 
@@ -44,6 +47,18 @@ public class Controller {
     @Autowired
     private CoordinateValidator validator;
 
+    @PostConstruct
+    public void setStartTime() {
+        this.startTime = System.currentTimeMillis();
+    }
+    
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> getApplicationStatus() {
+        String response = String.format("{\"status\":\"ready\",\"uptime\":\"%s\"}",
+                System.currentTimeMillis() - startTime);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
+    }
+    
     /**
      * Query around a single identifier, using a radius value and specifying
      * units of degrees, minutes or seconds.

@@ -66,6 +66,11 @@ public class ControllerTest extends EasyMockSupport {
     }
 
     @Test
+    public void testSetStartTime() {
+        controller.setStartTime();
+        assertNotNull(ReflectionTestUtils.getField(controller, "startTime"));
+    }
+    @Test
     public void testController() {
         assertNotNull(controller);
     }
