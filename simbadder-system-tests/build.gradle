@@ -10,6 +10,11 @@ dependencies {
     compile "info.cukes:cucumber-junit:1.1.5"
     compile "info.cukes:cucumber-spring:1.1.5"
 }
+
+jar {
+    baseName = "simbadder-system-tests"
+}
+
 springBoot  {
     requiresUnpack = ['info.cukes:cucumber-java', 'info.cukes:cucumber-spring']
 }
