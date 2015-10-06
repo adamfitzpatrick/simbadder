@@ -12,8 +12,7 @@ buildscript {
     }
 }
 
-apply plugin: "docker"
-
+rootProject.ext.appVersion = '0.2.0'
 group = "adamfitzpatrick"
 
 allprojects {
@@ -33,6 +32,10 @@ subprojects {
     
     repositories {
         mavenCentral()
+    }
+
+    jar {
+        version = '0.2.0'
     }
 
     checkstyle {
@@ -63,17 +66,18 @@ subprojects {
         testClassesDir = sourceSets.intTest.output.classesDir
         classpath = sourceSets.intTest.runtimeClasspath
     }
-/*
-    task buildDocker(type: Docker, dependsOn: build) {
-        push = false
-        applicationName = jar.baseName
-        dockerfile = file('src/main/docker/Dockerfile')
-        doFirst {
-            copy {
-                from jar
-                into stageDir
-            }
-        }
-    }
-*/
 }
+
+task copyJars (type: Copy) {
+    from(project(":simbadder").jar.archivePath)
+    into("docker")
+}
+
+task bootRunDocker (type: Exec) {
+    workingDir "docker"
+    commandLine "./run-docker.sh"
+}
+
+bootRunDocker.dependsOn copyJars
+bootRunDocker.dependsOn project(":simbadder").build
+bootRunDocker.dependsOn project(":simbadder-system-tests").build
