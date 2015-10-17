@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#./gradlew clean build
+./gradlew clean build
 
 cd simbadder
 gradle bootRun &> /dev/null & PID=$!

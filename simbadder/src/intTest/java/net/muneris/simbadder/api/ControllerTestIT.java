@@ -1,5 +1,6 @@
 package net.muneris.simbadder.api;
 
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.when;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,13 +8,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
 import net.muneris.simbadder.SpringAwareContextIT;
-import net.muneris.simbadder.model.SimbadObject;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.path.json.JsonPath;
 
@@ -21,6 +16,7 @@ import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.http.MediaType;
 
 /**
  * @author Adam Fitzpatrick (adam@muneris.net)
@@ -30,11 +26,9 @@ public class ControllerTestIT extends SpringAwareContextIT {
 
     private final String hd1Id = "HD      1";
     private final String hd2Id = "HD      2";
-    private ObjectMapper mapper;
 
     @Before
     public void setUp() throws Exception {
-        mapper = new ObjectMapper();
     }
 
     @After
@@ -135,5 +129,57 @@ public class ControllerTestIT extends SpringAwareContextIT {
                 .then().statusCode(HttpStatus.SC_BAD_REQUEST).contentType(ContentType.JSON)
                 .body("reason", is("Coordinate out of range"))
                 .body("source", is("Controller.getForCooQuery"));
+    }
+    
+    @Test
+    public void testGetForSampleQuery() {
+        String requestBody = "{"
+                + "\"ra\": {"
+                + "     \"$gte\": \"0\", \"$lt\": \"0.1\""
+                + "},"
+                + "\"dec\": {"
+                + "     \"$gte\": \"0\", \"$lt\": \"0.1\""
+                + "}}";
+        String response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post("/sample")
+            .then().contentType(ContentType.JSON)
+            .statusCode(HttpStatus.SC_OK).extract().response().asString();
+        JsonPath json = new JsonPath(response);
+        assertThat(json.getInt("objects.size()"), is(5));
+        assertThat(json.get("objects[0].mainId"), is("SDSS J000004.21+000122.4"));
+    }
+    
+    @Test
+    public void testGetForSampleQueryInvalidField() {
+        String requestBody = "{"
+                + "\"foo\": {"
+                + "     \"$gte\": \"0\", \"$lt\": \"0.1\""
+                + "},"
+                + "\"dec\": {"
+                + "     \"$gte\": \"0\", \"$lt\": \"0.1\""
+                + "}}";
+        given().contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post("/sample")
+            .then().contentType(ContentType.JSON)
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+            .body("reason", is("Unable to parse sample query"))
+            .body("source", is("SampleQueryValidator.validateField"));
+    }
+    
+    @Test
+    public void testGetForSampleQueryInvalidOperator() {
+        String requestBody = "{"
+                + "\"ra\": {"
+                + "     \"$eq\": \"0\", \"$lt\": \"0.1\""
+                + "},"
+                + "\"dec\": {"
+                + "     \"$gte\": \"0\", \"$lt\": \"0.1\""
+                + "}}";
+        given().contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody).when().post("/sample")
+            .then().contentType(ContentType.JSON)
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+            .body("reason", is("Unable to parse sample query"))
+            .body("source", is("SampleQueryValidator.validateOperator"));
     }
 }
