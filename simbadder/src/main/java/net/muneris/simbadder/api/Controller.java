@@ -10,17 +10,21 @@ import net.muneris.simbadder.simbadapi.query.CustomQuery;
 import net.muneris.simbadder.simbadapi.query.IdQuery;
 import net.muneris.simbadder.simbadapi.query.Query;
 import net.muneris.simbadder.simbadapi.query.RadiusUnit;
+import net.muneris.simbadder.simbadapi.query.sample.SampleQuery;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -179,6 +183,18 @@ public class Controller {
     public ResponseEntity<SimbadResponseWrapper> getForIdListQuery(@RequestParam(value = "in",
     required = true) String[] idListString) {
         IdQuery query = new IdQuery(Arrays.asList(idListString));
+        SimbadResponseWrapper wrapper = assembleObjectList(query, Format.allNonDistance());
+        if (wrapper.objects != null) {
+            wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
+        }
+        return new ResponseEntity<SimbadResponseWrapper>(wrapper, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/sample", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SimbadResponseWrapper> getForSampleQuery(
+            @RequestBody Map<String, Map<String, String>> requestBody) {
+        SampleQuery query = new SampleQuery(requestBody);
         SimbadResponseWrapper wrapper = assembleObjectList(query, Format.allNonDistance());
         if (wrapper.objects != null) {
             wrapper.objects = stateProvider.addObjectSelfRelForList(wrapper.objects);
