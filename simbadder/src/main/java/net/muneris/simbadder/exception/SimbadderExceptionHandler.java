@@ -32,7 +32,7 @@ public class SimbadderExceptionHandler {
     private static final String EXCEPTION_PATTERN_STRING =
             "(?<=(java\\.text\\.))[A-Za-z]{1,50}|"
             + "incorrect field in format|"
-            + "No astronomical object found";
+            + "No (astronomical )?object found";
     private static final String MESSAGE_PATTERN_STRING = "(?<=(%s: ))[A-Za-z0-9 :]+";
 
     @ExceptionHandler(ResourceAccessException.class)
