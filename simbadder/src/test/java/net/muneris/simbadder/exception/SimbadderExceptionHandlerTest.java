@@ -31,6 +31,8 @@ public class SimbadderExceptionHandlerTest {
     private static final String SOURCE = "Relayed from SIMBAD";
     private static final String PARSEERRMESSAGE = "error message: foo";
     private static final String FORMATERRMESSAGE = "bad field";
+    private static final String NOASTROOBJECTS = "No astronomical object found";
+    private static final String NOOBJECTS = "No object found";
     private static final String UNREADABLE = "No additional information from SIMBAD.";
     
     private SimbadderExceptionHandler handler;
@@ -65,6 +67,26 @@ public class SimbadderExceptionHandlerTest {
                 new SimbadderException(SimbadExceptionClass.FORMATTING_ERROR,
                         FORMATERRMESSAGE, SOURCE);
         expect(accessException.getMessage()).andReturn(SIMBAD_FORMATTING_ERROR).times(2);
+        replay(accessException);
+        executeAccessException();
+        asserter();
+    }
+    
+    @Test
+    public void testResolveNoAstronomicalObjectsError() {
+        expected = new SimbadderException(SimbadExceptionClass.NO_OBJECTS_ERROR,
+                UNREADABLE, SOURCE);
+        expect(accessException.getMessage()).andReturn(NOASTROOBJECTS).times(2);    
+        replay(accessException);
+        executeAccessException();
+        asserter();
+    }
+    
+    @Test
+    public void testResolveNoObjectsError() {
+        expected = new SimbadderException(SimbadExceptionClass.NO_OBJECTS_ERROR, 
+                UNREADABLE, SOURCE);
+        expect(accessException.getMessage()).andReturn(NOOBJECTS).times(2);
         replay(accessException);
         executeAccessException();
         asserter();

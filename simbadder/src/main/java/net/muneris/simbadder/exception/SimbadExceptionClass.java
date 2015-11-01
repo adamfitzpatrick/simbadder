@@ -27,10 +27,17 @@ public enum SimbadExceptionClass {
         statusCodes.put(SimbadExceptionClass.PARSE_ERROR, HttpStatus.NOT_FOUND);
         statusCodes.put(SimbadExceptionClass.FORMATTING_ERROR, HttpStatus.BAD_REQUEST);
         statusCodes.put(SimbadExceptionClass.UNSPECIFIED_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-        statusCodes.put(SimbadExceptionClass.NO_OBJECTS_ERROR, HttpStatus.BAD_REQUEST);
+        statusCodes.put(SimbadExceptionClass.NO_OBJECTS_ERROR, HttpStatus.NOT_FOUND);
+    }
+    private static final Map<String, String> alternateMessages = new HashMap<>();
+    static {
+        alternateMessages.put("No object found", SimbadExceptionClass.NO_OBJECTS_ERROR.toString());
     }
     
     public static SimbadExceptionClass factory(String errorString) {
+        if (alternateMessages.containsKey(errorString)) {
+            errorString = alternateMessages.get(errorString);
+        }
         Pattern pattern = Pattern.compile(errorString, Pattern.CASE_INSENSITIVE);
         List<SimbadExceptionClass> sEClassList = Arrays.asList(SimbadExceptionClass.values());
         Optional<SimbadExceptionClass> option = sEClassList.stream().filter(sEClass -> {
