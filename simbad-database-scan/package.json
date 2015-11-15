@@ -1,0 +1,24 @@
+{
+  "name": "simbad-database-scan",
+  "version": "0.1.0",
+  "description": "Scan SIMBAD database for anomalies",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-coffee": "^2.3.1",
+    "gulp-plumber": "^1.0.1",
+    "sleep": "^3.0.0"
+  },
+  "dependencies": {
+    "http": "0.0.0",
+    "mongodb": "~1.4",
+    "monk": "^1.0.1",
+    "querystring": "^0.2.0",
+    "terminal-kit": "^0.15.10"
+  }
+}
